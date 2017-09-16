@@ -40,6 +40,10 @@ def get_pictures():
 
 # bing image search
 def bing_search(location_name, count):
+
+
+    return ["test"]
+
     headers = {
         # Request headers
         'Ocp-Apim-Subscription-Key': 'fedcea6c97d841ac9105b8e9e1abc139',
@@ -53,8 +57,6 @@ def bing_search(location_name, count):
         'mkt': 'en-us',
         'safeSearch': 'Moderate',
     })
-
-    return []
 
     try:
         conn = http.client.HTTPSConnection('api.cognitive.microsoft.com')
