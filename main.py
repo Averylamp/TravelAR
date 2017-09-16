@@ -11,6 +11,7 @@ def default_route():
 
 @app.route('/flight', methods=['GET'])
 def get_flight():
+    print("testing flight")
     return "Flight information"
 
 
