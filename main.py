@@ -18,6 +18,8 @@ def get_flight():
 @app.route('/get_pictures', methods=['GET'])
 def get_pictures():
     location = request.args.get('location', '')
+
+    return "got pictures"
     print("Getting pictures for location: %s" % location)
 
     # use string, number_of_images for these items to add keywords to image search
