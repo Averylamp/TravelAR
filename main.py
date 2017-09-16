@@ -19,8 +19,7 @@ def get_flight():
 def get_pictures():
     location = request.args.get('location', '')
 
-    return location
-    print("Getting pictures for location: %s" % location)
+    # print("Getting pictures for location: %s" % location)
 
     # use string, number_of_images for these items to add keywords to image search
     # and number of images to return
@@ -32,6 +31,8 @@ def get_pictures():
     search_items.append((" activities", 2))
 
     master_list = []
+
+    return jsonify(master_list)
 
     for i in search_items:
         master_list.append(bing_search(location + i[0], i[1]))
