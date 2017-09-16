@@ -1,7 +1,1 @@
-Flask==0.12.1
-http.client
-urllib.request
-urllib.parse
-urllib.error
-base64
-json
+Flask
