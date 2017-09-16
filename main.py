@@ -62,6 +62,8 @@ def bing_search(location_name, count):
         data = response.read()
         # print(data)
 
+        return [len(data)]
+
         json_array = json.loads(data) #this line won't work
 
         content_list = json_array['value']
