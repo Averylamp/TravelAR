@@ -9,6 +9,9 @@ app = Flask(__name__)
 def default_route():
     return "Hello TrvlAR"
 
+@app.route('/flight', methods=['GET'])
+    return "Flight information."
+
 
 # works with ?key=value pair key=location and value = name of location
 @app.route('/get_pictures', methods=['GET'])
