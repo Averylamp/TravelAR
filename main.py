@@ -16,7 +16,6 @@ def get_pictures():
     location = request.args.get('location', '')
     print("Getting pictures for location: %s" % location)
 
-
     # use string, number_of_images for these items to add keywords to image search
     # and number of images to return
     search_items = []
@@ -32,6 +31,7 @@ def get_pictures():
         master_list.append(bing_search(location + i[0], i[1]))
     return jsonify(master_list)
 
+# bing image search
 def bing_search(location_name, count):
     headers = {
         # Request headers
@@ -73,4 +73,5 @@ def bing_search(location_name, count):
 
 
 if __name__=='__main__':
-    app.run(threaded=True, debug=True, host='0.0.0.0', port=80)
+    # app.run(threaded=True, debug=True, host='0.0.0.0', port=80)
+    app.run()
