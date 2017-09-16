@@ -32,8 +32,6 @@ def get_pictures():
 
     master_list = []
 
-    # return jsonify(bing_search(location, 2))
-
     for i in search_items:
         master_list.append(bing_search(location + i[0], i[1]))
     return jsonify(master_list)
@@ -61,8 +59,6 @@ def bing_search(location_name, count):
         response = conn.getresponse()
         data = response.read()
         # print(data)
-
-        # return [len(data)]
 
         json_array = json.loads(data) #this line won't work
 
