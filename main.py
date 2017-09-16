@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def default_route():
-    json.loads(jsonify("testing json"))
+    # value = json.loads(jsonify(["testing json"]))
     return "Hello TrvlAR"
 
 @app.route('/flight', methods=['GET'])
