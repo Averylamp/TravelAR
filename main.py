@@ -54,6 +54,8 @@ def bing_search(location_name, count):
         'safeSearch': 'Moderate',
     })
 
+    return []
+
     try:
         conn = http.client.HTTPSConnection('api.cognitive.microsoft.com')
         conn.request("GET", "/bing/v5.0/images/search?%s" % params, "{body}", headers)
