@@ -41,9 +41,6 @@ def get_pictures():
 # bing image search
 def bing_search(location_name, count):
 
-
-    return ["test"]
-
     headers = {
         # Request headers
         'Ocp-Apim-Subscription-Key': 'fedcea6c97d841ac9105b8e9e1abc139',
@@ -64,6 +61,8 @@ def bing_search(location_name, count):
         response = conn.getresponse()
         data = response.read()
         # print(data)
+
+        return ["test"]
 
         json_array = json.loads(data)
         content_list = json_array['value']
