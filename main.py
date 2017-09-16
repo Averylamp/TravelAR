@@ -9,7 +9,8 @@ app = Flask(__name__)
 def default_route():
     return "Hello TrvlAR"
 
-@app.route('/flight', methods=['GET']):
+@app.route('/flight', methods=['GET'])
+def get_flight():
     return "Flight information"
 
 
