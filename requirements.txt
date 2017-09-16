@@ -1,1 +1,1 @@
-Flask --upgrade
+Flask==0.12.1
