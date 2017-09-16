@@ -32,7 +32,7 @@ def get_pictures():
 
     master_list = []
 
-    return jsonify(bing_search(location))
+    return jsonify(bing_search(location, 2))
 
     for i in search_items:
         master_list.append(bing_search(location + i[0], i[1]))
