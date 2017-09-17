@@ -25,3 +25,8 @@ Just about the best augmented reality travel app you've ever seen.
 - https://docs.microsoft.com/en-us/azure/app-service-web/app-service-web-get-started-python
 - http://docs.python-requests.org/en/master/
 - http://docs.python-requests.org/en/master/user/quickstart/
+
+#### API Keys
+
+Wolfram Alpha
+- HK83UR-UHGPY7A8JA

@@ -22,6 +22,30 @@ def get_trip():
     print(info)
     return info
 
+# wolfram alpha section
+@app.route('/population', methods=['GET'])
+def get_population():
+
+    # general api usage
+    # http://api.wolframalpha.com/v2/query?input=pi&appid=XXXX
+
+    url_val = "http://api.wolframalpha.com/v2/query"
+
+    location = request.args.get('location', '')
+    query = "What is the population of " + location
+    API_KEY_Wolfram = "HK83UR-UHGPY7A8JA"
+
+    data = requests.get(url=url_val, params={"input": query, "appid": API_KEY_Wolfram})
+
+
+    # result_string = 'pod title=\'Result\''
+    #
+    # print()
+    # print()
+    return jsonify(data.text)
+
+
+
 # works with ?key=value pair key=location and value = name of location
 @app.route('/get_pictures', methods=['GET'])
 def get_pictures():
@@ -46,7 +70,7 @@ def get_pictures():
     master_list = []
 
     for i in search_items:
-        master_list.append(bing_search(location + i[0], i[1]))
+        master_list.append(bing_search(location + i[0], i[1])[0])
     return jsonify(master_list)
 
 # bing image search
