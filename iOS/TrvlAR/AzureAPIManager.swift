@@ -28,15 +28,19 @@ class AzureAPIManager: NSObject {
     }
     
     func getPictures(location:String, completionHandler: @escaping ([(UIImage, String)?])-> ()){
-        
+        print("Get pictures called")
         Alamofire.request(azureURL.appendingPathComponent("get_pictures?location=\(location)")).responseJSON { (response) in
             if let json = response.data {
                 let data = JSON(data: json)
-                
+                print("Data response received")
                 print(data)
                 if var fullJSONArray = data.array {
                     if fullJSONArray.count > 9 {
                         fullJSONArray.removeLast(fullJSONArray.count - 9)
+                    }
+                    if fullJSONArray.count == 0{
+                        completionHandler([])
+                        return
                     }
                     var resultingArray:[(URL, String, Int)] = []
                     for item in fullJSONArray{

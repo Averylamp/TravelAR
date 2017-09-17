@@ -186,7 +186,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             // Text Node
             let (minBound, maxBound) = textGeometry.boundingBox
             let textNode = SCNNode(geometry: textGeometry)
-            var textPosition = SCNVector3Make(0, Float(Nodes.WALL_WIDTH / 2.0), 0)
+            var textPosition = SCNVector3Make(-0.4, 0.6, 1.6)
             textNode.position = textPosition
             wallNode.addChildNode(textNode)
 //            textNode.eulerAngles = SCNVector3(0, 90.degreesToRadians, 0)
@@ -226,18 +226,19 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 
             let light = SCNLight()
             // [SceneKit] Error: shadows are only supported by spot lights and directional lights
-            light.type  = .spot
+            light.type  = .directional
+            light.intensity = 100
             //            light.type = .ambient
-            light.spotInnerAngle = 70
-            light.spotOuterAngle = 120
+//            light.spotInnerAngle = 10
+//            light.spotOuterAngle = 120
             light.zNear = 0.00001
             light.zFar = 5
-            light.castsShadow = true
-            light.shadowRadius = 200
-            light.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)
-            light.shadowMode = .deferred
-//            let constraint = SCNLookAtConstraint(target: floorShadowNode)
-//            constraint.isGimbalLockEnabled = true
+//            light.castsShadow = true
+//            light.shadowRadius = 200
+//            light.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)
+//            light.shadowMode = .deferred
+            let constraint = SCNLookAtConstraint(target: newPortal.floorNode!)
+            constraint.isGimbalLockEnabled = true
             let lightNode = SCNNode()
             lightNode.light = light
             lightNode.position = SCNVector3(worldCoord.x,
@@ -247,6 +248,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             sceneView.scene.rootNode.addChildNode(lightNode)
 
             AzureAPIManager.shared().getPictures(location: searchQuery, completionHandler: { (results) in
+                print("Images Found returning")
+                print(results)
                 if  results.count > 0{
                     var images = [(UIImage, String)]()
                     results.forEach{
@@ -441,13 +444,14 @@ class Portal {
             }
             
             //Light Node
-            if let floorNode = floorNode{
+            if let floorNode = floorNode, i == 0{
+                print("Added light to \(i)")
                 let light = SCNLight()
                 // [SceneKit] Error: shadows are only supported by spot lights and directional lights
-                light.type  = .spot
+                light.type  = .ambient
                 //            light.type = .ambient
-                light.spotInnerAngle = 70
-                light.spotOuterAngle = 120
+//                light.spotInnerAngle = 70
+//                light.spotOuterAngle = 120
                 light.zNear = 0.00001
                 light.zFar = 5
                 light.castsShadow = false
@@ -461,12 +465,12 @@ class Portal {
                 //                    light.shadowRadius = 200
                 //                    light.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)
                 //                    light.shadowMode = .deferred
-                let constraint = SCNLookAtConstraint(target: imageNode)
-                constraint.isGimbalLockEnabled = true
+//                let constraint = SCNLookAtConstraint(target: imageNode)
+//                constraint.isGimbalLockEnabled = true
                 let lightNode = SCNNode()
                 lightNode.light = light
                 lightNode.position = SCNVector3(floorNode.position.x, floorNode.position.y, floorNode.position.z)
-                lightNode.constraints = [constraint]
+//                lightNode.constraints = [constraint]
                 sceneView?.scene.rootNode.addChildNode(lightNode)
             }
         }
