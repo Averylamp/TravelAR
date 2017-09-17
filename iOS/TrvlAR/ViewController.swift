@@ -215,17 +215,19 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                                         newPlaneData.1.z - Float(Nodes.WALL_LENGTH))
         lightNode.constraints = [constraint]
         sceneView.scene.rootNode.addChildNode(lightNode)
-        addImagesToRoom(images: [#imageLiteral(resourceName: "cat0"),#imageLiteral(resourceName: "cat1"),#imageLiteral(resourceName: "cat2"),#imageLiteral(resourceName: "cat3"),#imageLiteral(resourceName: "cat4"),#imageLiteral(resourceName: "cat5"),#imageLiteral(resourceName: "cat6"),#imageLiteral(resourceName: "cat7"),#imageLiteral(resourceName: "cat8")])
+        addImagesToRoom(images: [(#imageLiteral(resourceName: "cat0"), "Cat 1"),(#imageLiteral(resourceName: "cat1"), "Cat 2"),(#imageLiteral(resourceName: "cat2"), "Cat 3"),(#imageLiteral(resourceName: "cat3"), "Cat 4"),(#imageLiteral(resourceName: "cat4"), "Cat 5"),(#imageLiteral(resourceName: "cat5"), "Cat 6"),(#imageLiteral(resourceName: "cat6"), "Cat 7"),(#imageLiteral(resourceName: "cat7"), "Cat 8"),(#imageLiteral(resourceName: "cat8"), "Cat 9")])
     }
     
     var imageNodes = [SCNNode]()
-    func addImagesToRoom(images: [UIImage]){
+    func addImagesToRoom(images: [(UIImage,  String)]){
         imageNodes.forEach {
             $0.removeFromParentNode()
         }
         let frameColor = UIColor.white
         for i in 0..<images.count{
-            let image = images[i]
+            let image = images[i].0
+            let caption = images[i].1
+            var imageNode = SCNNode()
             if i == 0, let wallNode = fullWalls[0].childNode(withName: "WallSegment", recursively: false), let wallGeometry = wallNode.geometry as? SCNBox {
                 let imageHtoWRatio = image.size.height / image.size.width
                 let boxHtoWRatio:CGFloat = (wallGeometry.height / wallGeometry.length)
@@ -240,7 +242,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                     
                 }
                 print("Image, Height: \(imageHeight), Width: \(imageWidth)")
-                let imageNode = SCNNode()
                 
                 let imageNodeGeometry = SCNBox(width: Nodes.WALL_WIDTH, height: imageHeight, length: imageWidth, chamferRadius: 0.1)
                 
@@ -262,7 +263,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 let imageWidth = (wallGeometry.length / 3) * 0.8 // Spacing factor
                 let imageHeight = imageWidth * imageHtoWRatio
                 print("Image, Height: \(imageHeight), Width: \(imageWidth)")
-                let imageNode = SCNNode()
                 let imageNodeGeometry = SCNBox(width: Nodes.WALL_WIDTH, height: imageHeight, length: imageWidth, chamferRadius: 0.1)
 
                 let frameMaterial = SCNMaterial()
@@ -285,7 +285,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 let imageWidth = wallGeometry.length * 0.8 // Spacing factor
                 let imageHeight = imageWidth * imageHtoWRatio
                 print("Image, Height: \(imageHeight), Width: \(imageWidth)")
-                let imageNode = SCNNode()
                 let imageNodeGeometry = SCNBox(width: Nodes.WALL_WIDTH, height: imageHeight, length: imageWidth, chamferRadius: 0.1)
                 
                 let frameMaterial = SCNMaterial()
@@ -299,6 +298,31 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 imageNode.position = imagePosition
                 wallNode.addChildNode(imageNode)
                 imageNode.renderingOrder = 200
+            }
+            if i != 0{
+                let textGeometry = SCNText(string: caption, extrusionDepth: CGFloat(0.01))
+                var font = UIFont(name: "Avenir-Roman", size: 0.1)
+                font = font?.withTraits(traits: .traitBold)
+                textGeometry.font = font
+                textGeometry.alignmentMode = kCAAlignmentCenter
+                textGeometry.firstMaterial?.diffuse.contents = UIColor.black
+                textGeometry.firstMaterial?.specular.contents = UIColor.white
+                textGeometry.firstMaterial?.isDoubleSided = true
+                // bubble.flatness // setting this too low can cause crashes.
+                textGeometry.chamferRadius = CGFloat(0.01)
+                
+                // Text Node
+                let (minBound, maxBound) = textGeometry.boundingBox
+                let textNode = SCNNode(geometry: textGeometry)
+                textNode.pivot = SCNMatrix4MakeTranslation((maxBound.x - minBound.x)/2,(maxBound.y - minBound.y)/2,0)
+                var textPosition = SCNVector3Make(0, 0, 0)
+                if let imageGeometry = imageNode.geometry as? SCNBox{
+                    textPosition.y -= 0.3
+                }
+                textNode.position = textPosition
+                textNode.eulerAngles = SCNVector3(0, 270.0.degreesToRadians, 0)
+    //            textNode.scale = SCNVector3Make(0.5, 0.5, 0.5)
+                imageNode.addChildNode(textNode)
             }
         }
     }
