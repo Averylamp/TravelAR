@@ -123,4 +123,4 @@ def all_information(user_inp):
 	except Exception as e:
 		return e
 
-print(remove_non_ascii(str(all_information("salt"))))
+# print(remove_non_ascii(str(all_information("salt"))))
