@@ -17,7 +17,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     var planeCount = 0
     var currentPlane:SCNNode?
-    
+	var debuggingLabel = UILabel()
+	
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -25,8 +26,21 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.automaticallyUpdatesLighting = false
         
         let tap = UITapGestureRecognizer()
+		tap.numberOfTouchesRequired = 1
         tap.addTarget(self, action: #selector(didTap))
         sceneView.addGestureRecognizer(tap)
+		
+		//Three Finger Tap for Reset
+		let threeFingerTap = UITapGestureRecognizer()
+		threeFingerTap.numberOfTouchesRequired = 3
+		threeFingerTap.addTarget(self, action: #selector(didThreeFingerTap))
+		sceneView.addGestureRecognizer(threeFingerTap)
+		
+		//Debugging Label
+		debuggingLabel.frame = CGRect(x: 0, y: self.view.frame.height-44, width: 400, height: 44)
+		debuggingLabel.backgroundColor = .black;
+		debuggingLabel.textColor = .white;
+		view.addSubview(debuggingLabel)
     }
     
     // this func from Apple ARKit placing objects demo
@@ -38,6 +52,13 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         }
         sceneView.scene.lightingEnvironment.intensity = intensity
     }
+	
+	func getConfiguration() -> ARWorldTrackingConfiguration {
+		let configuration = ARWorldTrackingConfiguration()
+		configuration.planeDetection = .horizontal
+		configuration.isLightEstimationEnabled = true
+		return configuration
+	}
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -46,7 +67,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         configuration.planeDetection = .horizontal
         configuration.isLightEstimationEnabled = true
         
-        sceneView.session.run(configuration)
+        sceneView.session.run(getConfiguration())
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -68,6 +89,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
     
     @objc func didTap(_ sender:UITapGestureRecognizer) {
+
+		debuggingLabel.text = "Tap, tapped."
         let location = sender.location(in: sceneView)
         
         print("didTap \(location)")
@@ -78,10 +101,11 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         print("adding wall???")
         currentPlane = newPlaneData.0
-        
-        
+		
+		
         let wallNode = SCNNode()
-        wallNode.position = newPlaneData.1
+		let positionAddition = SCNVector3.init(newPlaneData.1.x+1.5, newPlaneData.1.y, newPlaneData.1.z)
+		wallNode.position = positionAddition
         
         let sideLength = Nodes.WALL_LENGTH * 3
         let halfSideLength = sideLength * 0.5
@@ -213,7 +237,11 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             planeCount -= 1
         }
     }
-    
+	
+    @objc func didThreeFingerTap(_ sender:UITapGestureRecognizer) {
+		debuggingLabel.text = "World Reset"
+		sceneView.session.run(getConfiguration(), options: [.resetTracking, .removeExistingAnchors])
+	}
 }
 
 
