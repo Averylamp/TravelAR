@@ -3,6 +3,8 @@ from flask import Flask, request, jsonify
 import http.client, urllib.request, urllib.parse, urllib.error, base64
 import json
 
+import requests
+
 app = Flask(__name__)
 
 @app.route('/')
@@ -46,23 +48,49 @@ def bing_search(location_name, count):
         'Ocp-Apim-Subscription-Key': 'fedcea6c97d841ac9105b8e9e1abc139',
     }
 
-    params = urllib.parse.urlencode({
+    # params = urllib.parse.urlencode({
+    #     # Request parameters
+    #     'q': location_name,
+    #     'count': count,
+    #     'offset': '0',
+    #     'mkt': 'en-us',
+    #     'safeSearch': 'Moderate',
+    # })
+
+    params = {
         # Request parameters
         'q': location_name,
         'count': count,
         'offset': '0',
         'mkt': 'en-us',
         'safeSearch': 'Moderate',
-    })
+    }
+
+    print("About to start")
+
+    # data = requests.get(
+    # url="https://api.cognitive.microsoft.com/bing/v5.0/images/search", params=params, headers=headers)
+    # ,
+    # headers=headers)#, params=params)
+
+    # conn = http.client.HTTPSConnection('api.cognitive.microsoft.com')
+    # conn.request("GET", "/bing/v5.0/images/search?%s" % params, "{body}", headers)
+
+
+    # print(data.text)
 
     try:
-        conn = http.client.HTTPSConnection('api.cognitive.microsoft.com')
-        conn.request("GET", "/bing/v5.0/images/search?%s" % params, "{body}", headers)
-        response = conn.getresponse()
-        data = response.read()
+        # conn = http.client.HTTPSConnection('api.cognitive.microsoft.com')
+        # conn.request("GET", "/bing/v5.0/images/search?%s" % params, "{body}", headers)
+        # response = conn.getresponse()
+        # data = response.read()
         # print(data)
 
-        json_array = json.loads(data) #this line won't work
+        data = requests.get(
+        url="https://api.cognitive.microsoft.com/bing/v5.0/images/search", params=params, headers=headers)
+
+
+        json_array = json.loads(data.text) #this line won't work
 
         content_list = json_array['value']
         web_url_list = []
