@@ -214,13 +214,13 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             lightNode.constraints = [constraint]
             sceneView.scene.rootNode.addChildNode(lightNode)
             AzureAPIManager.shared().getPictures(location: "Boston", completionHandler: { (results) in
-                if results != nil{
+                //if results != nil{
                     var images = [(UIImage, String)]()
                     results.forEach{
                         images.append($0!)
                     }
                     self.addImagesToRoom(images: images)
-                }
+                //}
             })
 //            addImagesToRoom(images: [(#imageLiteral(resourceName: "cat0"), "Cat 1"),(#imageLiteral(resourceName: "cat1"), "Cat 2"),(#imageLiteral(resourceName: "cat2"), "Cat 3"),(#imageLiteral(resourceName: "cat3"), "Cat 4"),(#imageLiteral(resourceName: "cat4"), "Cat 5"),(#imageLiteral(resourceName: "cat5"), "Cat 6"),(#imageLiteral(resourceName: "cat6"), "Cat 7"),(#imageLiteral(resourceName: "cat7"), "Cat 8"),(#imageLiteral(resourceName: "cat8"), "Cat 9")])
         }
@@ -235,7 +235,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         for i in 0..<images.count{
             let image = images[i].0
             let caption = images[i].1
-            var imageNode = SCNNode()
+            let imageNode = SCNNode()
             if i == 0, let wallNode = fullWalls[0].childNode(withName: "WallSegment", recursively: false), let wallGeometry = wallNode.geometry as? SCNBox {
                 let imageHtoWRatio = image.size.height / image.size.width
                 let boxHtoWRatio:CGFloat = (wallGeometry.height / wallGeometry.length)
