@@ -32,8 +32,18 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         threeFingerTap.numberOfTouchesRequired = 3
         threeFingerTap.addTarget(self, action: #selector(didThreeFingerTap))
         sceneView.addGestureRecognizer(threeFingerTap)
-        
-        
+		
+		//Text Field
+		let textField = UITextField()
+		textField.frame = CGRect(x: 0, y: 0, width: 200, height: 44)
+		textField.center = view.center
+		textField.textAlignment = .center
+		textField.placeholder = "Enter a Location"
+		textField.delegate = self
+		textField.returnKeyType = .done
+		textField.font = UIFont.systemFont(ofSize: 30)
+		sceneView.addSubview(textField)
+		
         //Debugging Label
         debuggingLabel.frame = CGRect(x: 0, y: self.view.frame.height-44, width: 400, height: 44)
         debuggingLabel.backgroundColor = .black;
@@ -328,6 +338,21 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             }
         }
     }
+	
+	func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
+		switch camera.trackingState {
+		case .notAvailable:
+			debuggingLabel.text = "Major Problem. Abort!"
+		case .normal:
+			debuggingLabel.text =  "All is good."
+		case .limited(.excessiveMotion):
+			debuggingLabel.text =  "Wow there buddy, slow down a bit."
+		case .limited(.insufficientFeatures):
+			debuggingLabel.text =  "Low detail; tracking will be limited."
+		case .limited(.initializing):
+			debuggingLabel.text =  "Warming Up..."
+		}
+	}
     
     
     // did update plane?
@@ -336,10 +361,22 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
 
     @objc func didThreeFingerTap(_ sender:UITapGestureRecognizer) {
+		print("world reset")
         debuggingLabel.text = "World Reset"
+		sceneView.session.pause()
+		sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
+			node.removeFromParentNode()}
         sceneView.session.run(getConfiguration(), options: [.resetTracking, .removeExistingAnchors])
     }
 }
 
+
+extension ViewController:UITextFieldDelegate {
+	
+	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+		textField.resignFirstResponder()
+		return true
+	}
+}
 
 
