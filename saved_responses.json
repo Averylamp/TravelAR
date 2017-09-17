@@ -1,0 +1,68 @@
+[
+  [
+    {
+      "city": "Honolulu",
+      "latitude": 21.318681,
+      "longitude": -157.922428,
+      "timezone": "Pacific/Honolulu",
+      "code": "HNL",
+      "airport": "Honolulu International Airport",
+      "previous_attractions": ["Hickam Field", "Diamond Head, Hawaii", "USS Arizona Memorial", "Waikiki", "Iolani Palace", "USS Missouri (BB-63)", "The Real World: Hawaii", "Honolulu", "Haiku Stairs", "Military grid reference system"],
+      "attractions": ["weather", "people", "attractions", "sports", "geography", "map", "resort", "culture", "sites"],
+      "fares": {
+        "2017-09-24": [["288.80", "USD", "AA", "12:35"], ["288.80", "USD", "DL", "07:15"], ["396.84", "USD", "UA", "07:41"], ["396.84", "USD", "HA", "06:30"], ["401.81", "USD", "AS", "16:38"], ["461.34", "USD", "DL", "06:38"], ["465.84", "USD", "B6", "06:30"], ["571.40", "USD", "VX", "07:25"]],
+        "2017-10-17": [["288.80", "USD", "AA", "06:20"], ["343.83", "USD", "UA", "06:25"], ["343.83", "USD", "DL", "07:15"], ["382.43", "USD", "AS", "19:02"], ["461.34", "USD", "DL", "06:25"], ["467.80", "USD", "VX", "07:25"], ["490.79", "USD", "B6", "21:49"], ["491.58", "USD", "B6", "20:13"], ["521.85", "USD", "HA", "20:13"], ["540.58", "USD", "B6", "20:13"]],
+        "2017-12-17": [["453.87", "USD", "UA", "17:50"], ["557.84", "USD", "AA", "18:25"], ["569.84", "USD", "AA", "15:14"], ["575.80", "USD", "AS", "07:10"], ["575.80", "USD", "VX", "07:10"], ["584.49", "USD", "DL", "19:00"], ["593.85", "USD", "HA", "11:05"], ["623.81", "USD", "B6", "21:23"], ["641.58", "USD", "B6", "06:50"], ["678.36", "USD", "DL", "06:29"]]
+      },
+      "popular_places": ["NYC", "CHI", "WAS", "SFO", "LAX", "ATL", "DFW", "BWI", "PHL", "LON"],
+      "population": "351792 people"
+    }
+  ],
+
+  [
+    {
+      "name": "honolulu",
+      "url": "https://www.bing.com/cr?IG=4F8841BA05574838901973285E062B7E&CID=2792980B7F4161AC06BB930B7E47602A&rd=1&h=fTipKMFRXqkT9_0yQnCoFMRqpaFY3dZ6aASzbd1DLDg&v=1&r=https%3a%2f%2fimages.trvl-media.com%2fmedia%2fcontent%2fshared%2fimages%2ftravelguides%2fdestination%2f1488%2fDiamond-Head-37463.jpg&p=DevEx,5009.1"
+    },
+    {
+      "name": "honolulu Hickam Field",
+      "url": "https://www.bing.com/cr?IG=3F687D202133413990508254A89DBCDE&CID=35DE68D94085659F200663D941836482&rd=1&h=5BZYWtZk6-eE7gKV3jp2VfHNtf4SiHGsyyNG5vf5hf0&v=1&r=https%3a%2f%2flh5.googleusercontent.com%2fL0VfOLxz-lQRHGvfJ2Op8V2-CPCEHK_-jHkxVdldZHDAgptdJctX0JTnmENsCudfqdw1itMz8hAt6vaaM2RmdQYsTKFYqojQRHval9Xy6P0i8RCJGgcFqdgQzU-YwdrlBA%3ds1600&p=DevEx,5009.1"
+    },
+    {
+      "name": "honolulu Diamond Head, Hawaii",
+      "url": "https://www.bing.com/cr?IG=533C6E487DEA48DDB8AE7C37A3F941D4&CID=037720FF0BC168EC2DCC2BFF0AC76959&rd=1&h=ULG6ejiqdO3baRMBIIiD-xMdby3XXieuAA5ObIq-v6M&v=1&r=https%3a%2f%2ffarm8.staticflickr.com%2f7168%2f6490549509_6da0e58dd3_o_d.jpg&p=DevEx,5009.1"
+    },
+    {
+      "name": "honolulu USS Arizona Memorial",
+      "url": "http://www.bing.com/cr?IG=57426E28F0E04C58B900D6D1DC8BD6D2&CID=071039087BDD6F17377532087ADB6EC9&rd=1&h=v4I7Kiq23r023SAuuVHX9Z4Xqf7e4g1tLB_1ripvW1Q&v=1&r=http%3a%2f%2fvizts.com%2fwp-content%2fuploads%2f2015%2f10%2fUss-Arizona-Memorial-honolulu-hawaii.jpg&p=DevEx,5009.1"
+    },
+    {
+      "name": "honolulu Waikiki",
+      "url": "http://www.bing.com/cr?IG=74EBCE273455438EBB633BA814B4D22C&CID=1E41AFE7738665D61ACBA4E77280641C&rd=1&h=Ksy3-D-Ux1SIcQbfJz6zDHGLbf3_MEqWw6qHTECgPxM&v=1&r=http%3a%2f%2fexp.cdn-hotels.com%2fhotels%2f1000000%2f20000%2f13900%2f13857%2f13857_234_z.jpg&p=DevEx,5009.1"
+    },
+    {
+      "name": "honolulu \u02bbIolani Palace",
+      "url": "http://www.bing.com/cr?IG=0EA1CAAFA4B84D7AA55A1C25EC212EB7&CID=2BBB8037B9A063AC0EF98B37B8A662D3&rd=1&h=lE__k0vEH07OJ2SwnkjJ0SIVEp3-OFWyRLnFiourJ9g&v=1&r=http%3a%2f%2fupload.wikimedia.org%2fwikipedia%2fcommons%2fe%2fe7%2fIolani_Palace_Oahu_Hawaii_Photo_D_Ramey_Logan.JPG&p=DevEx,5009.1"
+    },
+    {
+      "name": "honolulu USS Missouri (BB-63)",
+      "url": "http://www.bing.com/cr?IG=56C10904B9E846BF94A804A35F36E7B6&CID=20E2E0ED05CD63AE1E09EBED04CB6240&rd=1&h=RJTyKiZ3VDJf6Bu6SBSaym4yURc-pDCCoexaBdDYKRk&v=1&r=http%3a%2f%2fmedia-cdn.tripadvisor.com%2fmedia%2fphoto-s%2f01%2fbe%2f8f%2fce%2fuss-missouri-bb-63.jpg&p=DevEx,5009.1"
+    },
+    {
+      "name": "honolulu The Real World: Hawaii",
+      "url": "http://www.bing.com/cr?IG=1F1D11E02F1D4DECB4BB4E1404509CDC&CID=051E479096EC6A1C2A714C9097EA6BAF&rd=1&h=QHc2ac4SDUHnEx3nNu1mEL3Urrk-Wsu10QPDro2RTMo&v=1&r=http%3a%2f%2frealworldhouses.com%2fcompletepoolandvolcano.jpg&p=DevEx,5009.1"
+    },
+    {
+      "name": "honolulu Honolulu",
+      "url": "http://www.bing.com/cr?IG=F022E8D39FDB49FCA964C2B4E0730BA4&CID=1B69074C1AD9670623CE0C4C1BDF662F&rd=1&h=_1wDXZi36FzfjHBwds_3MP_jUXWRRCt55B7sd4HG3Nc&v=1&r=http%3a%2f%2f3.bp.blogspot.com%2f-S8KDIVvK_Gs%2fTyUH1Uv_dOI%2fAAAAAAAABSk%2f3FM7hlYkLSY%2fs1600%2fHonolulu%2bHawaii%2bbeach-09.jpg&p=DevEx,5009.1"
+    },
+    {
+      "name": "honolulu Haiku Stairs",
+      "url": "http://www.bing.com/cr?IG=B8A00AFC7E63476BA029C2CEC00646C1&CID=253FC34389A1613F15A2C84388A7602B&rd=1&h=WDw6cxhbdj3381AlXJIXt20CYecaeoB6gvFxDfTeIZQ&v=1&r=http%3a%2f%2fwww.amazingplacesonearth.com%2fwp-content%2fuploads%2f2012%2f09%2fHaiku-Stairs-Oahu-Hawaii.jpg&p=DevEx,5009.1"
+    },
+    {
+      "name": "honolulu Military grid reference system",
+      "url": "https://www.bing.com/cr?IG=94DCACECAA4342ACB9049799E7F4AD6D&CID=08D1664BD2B361FC10516D4BD3B560EB&rd=1&h=Gmx3oJdkMDwVMysFao9gGt2akJiTThdvFhYVGSAsTJg&v=1&r=https%3a%2f%2fupload.wikimedia.org%2fwikipedia%2fcommons%2ff%2ff9%2fMGRSgridOriginSchemeAA.png&p=DevEx,5009.1"
+    }
+  ]
+]
