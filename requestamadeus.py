@@ -110,7 +110,7 @@ def get_low_fare(dest_city):
 
 		# low_fare_url = "http://api.sandbox.amadeus.com/v1.2/flights/low-fare-search?origin=IST&destination=BOS&destination=" + dest_city + "&number_of_results=20" + "&departure_date=" + DEPARTURE_DATE + "&one-way=true&apikey=" + APIKEY
 
-		low_fare_url = "http://api.sandbox.amadeus.com/v1.2/flights/low-fare-search?origin=IST&destination=BOS&departure_date=" + DEPARTURE_DATE + "&one-way=true&number_of_results=10&apikey=vu9eP7z9lld0HIjLsfGVT85AjYGJ0xHA"
+		low_fare_url = "http://api.sandbox.amadeus.com/v1.2/flights/low-fare-search?origin=BOS&destination=" + dest_city + "&departure_date=" + DEPARTURE_DATE + "&one-way=true&number_of_results=10&apikey=vu9eP7z9lld0HIjLsfGVT85AjYGJ0xHA"
 		low_fare = requests.get(url=low_fare_url)
 
 		print(low_fare.text)
