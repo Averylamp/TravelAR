@@ -98,9 +98,12 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             let transform : matrix_float4x4 = closestResult.worldTransform
             //sceneView.session.add(anchor: ARAnchor(transform: transform))
 			
-			//sceneView.session.currentFrame?.camera.transform.columns.3
+			let unwrappedCoord = sceneView.session.currentFrame?.camera.transform.columns.3
+			guard let camCoord = unwrappedCoord else { return }
 			
-            let worldCoord = SCNVector3Make(transform.columns.3.x, transform.columns.3.y, transform.columns.3.z)
+			let worldCoord = SCNVector3Make(camCoord.x, camCoord.y, camCoord.z+1)
+			
+            //let worldCoord = SCNVector3Make(transform.columns.3.x, transform.columns.3.y, transform.columns.3.z)
 			
 			let newPortal = Portal()
 			
