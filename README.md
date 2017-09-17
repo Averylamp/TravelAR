@@ -21,6 +21,9 @@ Just about the best augmented reality travel app you've ever seen.
 - http://trvlar.azurewebsites.net/trip_info?location=boston
 - returns flight information as dictionary
 
+- http://trvlar.azurewebsites.net/population?location=boston
+- return population for a city
+
 #### Helpful Resources
 - https://docs.microsoft.com/en-us/azure/app-service-web/app-service-web-get-started-python
 - http://docs.python-requests.org/en/master/

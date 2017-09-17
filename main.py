@@ -23,6 +23,7 @@ def get_trip():
     return info
 
 # wolfram alpha section
+# extracts the resuling population of a location using the wolfram simple api for general questions
 @app.route('/population', methods=['GET'])
 def get_population():
 
@@ -38,12 +39,21 @@ def get_population():
     data = requests.get(url=url_val, params={"input": query, "appid": API_KEY_Wolfram})
 
 
-    # result_string = 'pod title=\'Result\''
-    #
-    # print()
-    # print()
-    return jsonify(data.text)
+    result_string = 'pod title=\'Result\''
 
+    just_before_string = 'alt=\''
+
+    start_index = data.text.find(result_string)
+    index = data.text.find(just_before_string, start_index) + len(just_before_string)
+    end_index = data.text.find(" people", index)
+
+    my_result = data.text[index:end_index] + " people"
+
+    print(data.text[index:end_index] + " people")
+    print(remove_non_ascii(data.text))
+
+    # return jsonify(data.text)
+    return my_result
 
 
 # works with ?key=value pair key=location and value = name of location
