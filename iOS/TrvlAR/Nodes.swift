@@ -32,7 +32,8 @@ final class Nodes {
                                  height: Nodes.WALL_WIDTH,
                                  length: Nodes.WALL_LENGTH * CGFloat(pieces),
                                  chamferRadius: 0)
-                segment.firstMaterial?.diffuse.contents = #imageLiteral(resourceName: "wood")
+                segment.firstMaterial?.diffuse.contents = #imageLiteral(resourceName: "hardwood")
+        segment.firstMaterial?.normal.contents = #imageLiteral(resourceName: "hardwoodNormal")
 //        segment.firstMaterial?.diffuse.contents = UIImage(named: "Media.scnassets/slipperystonework-albedo.png")
 //        segment.firstMaterial?.ambientOcclusion.contents = UIImage(named: "Media.scnassets/slipperystonework-ao.png")
 //        segment.firstMaterial?.metalness.contents = UIImage(named: "Media.scnassets/slipperystonework-metalness.png")
@@ -73,7 +74,7 @@ final class Nodes {
         
         let wallSegmentNode = SCNNode(geometry: wallSegment)
         wallSegmentNode.renderingOrder = 200
-        
+        wallSegmentNode.name = "WallSegment"
         node.addChildNode(wallSegmentNode)
         
         let maskingWallSegment = SCNBox(width: Nodes.WALL_WIDTH,

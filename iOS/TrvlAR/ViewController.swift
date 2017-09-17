@@ -36,6 +36,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 		threeFingerTap.addTarget(self, action: #selector(didThreeFingerTap))
 		sceneView.addGestureRecognizer(threeFingerTap)
 		
+		
 		//Debugging Label
 		debuggingLabel.frame = CGRect(x: 0, y: self.view.frame.height-44, width: 400, height: 44)
 		debuggingLabel.backgroundColor = .black;
@@ -88,6 +89,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         return (node, SCNVector3.positionFromTransform(results[0].worldTransform))
     }
     
+    var fullWalls = [SCNNode]()
+    var doorWalls = [SCNNode]()
+    
     @objc func didTap(_ sender:UITapGestureRecognizer) {
 
 		debuggingLabel.text = "Tap, tapped."
@@ -103,6 +107,15 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         currentPlane = newPlaneData.0
 		
 		
+		fullWalls.forEach{
+            $0.removeFromParentNode()
+        }
+        doorWalls.forEach{
+            $0.removeFromParentNode()
+        }
+        fullWalls = [SCNNode]()
+        doorWalls = [SCNNode]()
+
         let wallNode = SCNNode()
 		let positionAddition = SCNVector3.init(newPlaneData.1.x+1.5, newPlaneData.1.y, newPlaneData.1.z)
 		wallNode.position = positionAddition
@@ -114,18 +127,22 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                                                        maskXUpperSide: true)
         endWallSegmentNode.eulerAngles = SCNVector3(0, 90.0.degreesToRadians, 0)
         endWallSegmentNode.position = SCNVector3(0, Float(Nodes.WALL_HEIGHT * 0.5), Float(Nodes.WALL_LENGTH) * -1.5)
+        
         wallNode.addChildNode(endWallSegmentNode)
+        fullWalls.append(endWallSegmentNode)
         
         let sideAWallSegmentNode = Nodes.wallSegmentNode(length: sideLength,
                                                          maskXUpperSide: true)
         sideAWallSegmentNode.eulerAngles = SCNVector3(0, 180.0.degreesToRadians, 0)
         sideAWallSegmentNode.position = SCNVector3(Float(Nodes.WALL_LENGTH) * -1.5, Float(Nodes.WALL_HEIGHT * 0.5), 0)
         wallNode.addChildNode(sideAWallSegmentNode)
+        fullWalls.append(sideAWallSegmentNode)
         
         let sideBWallSegmentNode = Nodes.wallSegmentNode(length: sideLength,
                                                          maskXUpperSide: true)
         sideBWallSegmentNode.position = SCNVector3(Float(Nodes.WALL_LENGTH) * 1.5, Float(Nodes.WALL_HEIGHT * 0.5), 0)
         wallNode.addChildNode(sideBWallSegmentNode)
+        fullWalls.append(sideBWallSegmentNode)
         
         let doorSideLength = (sideLength - Nodes.DOOR_WIDTH) * 0.5
         
@@ -136,6 +153,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                                                Float(Nodes.WALL_HEIGHT) * Float(0.5),
                                                Float(Nodes.WALL_LENGTH) * 1.5)
         wallNode.addChildNode(leftDoorSideNode)
+        doorWalls.append(leftDoorSideNode)
         
         let rightDoorSideNode = Nodes.wallSegmentNode(length: doorSideLength,
                                                       maskXUpperSide: true)
@@ -144,6 +162,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                                                 Float(Nodes.WALL_HEIGHT) * Float(0.5),
                                                 Float(Nodes.WALL_LENGTH) * 1.5)
         wallNode.addChildNode(rightDoorSideNode)
+        doorWalls.append(rightDoorSideNode)
         
         let aboveDoorNode = Nodes.wallSegmentNode(length: Nodes.DOOR_WIDTH,
                                                   height: Nodes.WALL_HEIGHT - Nodes.DOOR_HEIGHT)
@@ -196,6 +215,79 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                                         newPlaneData.1.z - Float(Nodes.WALL_LENGTH))
         lightNode.constraints = [constraint]
         sceneView.scene.rootNode.addChildNode(lightNode)
+        addImagesToRoom(images: [#imageLiteral(resourceName: "cat0"),#imageLiteral(resourceName: "cat1"),#imageLiteral(resourceName: "cat2"),#imageLiteral(resourceName: "cat3"),#imageLiteral(resourceName: "cat4"),#imageLiteral(resourceName: "cat5"),#imageLiteral(resourceName: "cat6"),#imageLiteral(resourceName: "cat7"),#imageLiteral(resourceName: "cat8")])
+    }
+    
+    var imageNodes = [SCNNode]()
+    func addImagesToRoom(images: [UIImage]){
+        imageNodes.forEach {
+            $0.removeFromParentNode()
+        }
+        for i in 0..<images.count{
+            let image = images[i]
+            if i == 0, let wallNode = fullWalls[0].childNode(withName: "WallSegment", recursively: false), let wallGeometry = wallNode.geometry as? SCNBox {
+                let imageHtoWRatio = image.size.height / image.size.width
+                let boxHtoWRatio:CGFloat = (wallGeometry.height / wallGeometry.length)
+                var imageWidth:CGFloat = 0.0
+                var imageHeight:CGFloat = 0.0
+                if boxHtoWRatio > imageHtoWRatio{
+                    imageWidth = wallGeometry.length
+                    imageHeight = imageWidth * imageHtoWRatio
+                }else{
+                    imageHeight = wallGeometry.height
+                    imageWidth = imageHeight / imageHtoWRatio
+                    
+                }
+                print("Image, Height: \(imageHeight), Width: \(imageWidth)")
+                let imageNode = SCNNode()
+                
+                let imageNodeGeometry = SCNBox(width: Nodes.WALL_WIDTH, height: imageHeight, length: imageWidth, chamferRadius: 0.1)
+                
+                let frameMaterial = SCNMaterial()
+                frameMaterial.diffuse.contents = UIColor.white
+                let imageMaterial = SCNMaterial()
+                imageMaterial.diffuse.contents = image
+                imageNodeGeometry.materials = [frameMaterial, frameMaterial, frameMaterial, imageMaterial, frameMaterial, frameMaterial]
+                imageNode.geometry = imageNodeGeometry
+                var imagePosition = wallNode.position
+                imagePosition.x = Float(-Nodes.WALL_WIDTH)
+                imageNode.position = imagePosition
+                wallNode.addChildNode(imageNode)
+                imageNode.renderingOrder = 200
+            }
+            if 0 < i, i < 7, let wallNode = fullWalls[(i + 2) / 3].childNode(withName: "WallSegment", recursively: false), let wallGeometry = wallNode.geometry as? SCNBox{
+                let imageHtoWRatio = image.size.height / image.size.width
+                
+                let imageWidth = (wallGeometry.length / 3) * 0.8 // Spacing factor
+                let imageHeight = imageWidth * imageHtoWRatio
+                print("Image, Height: \(imageHeight), Width: \(imageWidth)")
+                let imageNode = SCNNode()
+                let imageNodeGeometry = SCNBox(width: Nodes.WALL_WIDTH, height: imageHeight, length: imageWidth, chamferRadius: 0.1)
+
+                let frameMaterial = SCNMaterial()
+                frameMaterial.diffuse.contents = UIColor.white
+                let imageMaterial = SCNMaterial()
+                imageMaterial.diffuse.contents = image
+                imageNodeGeometry.materials = [frameMaterial, frameMaterial, frameMaterial, imageMaterial, frameMaterial, frameMaterial]
+                imageNode.geometry = imageNodeGeometry
+                var imagePosition = wallNode.position
+                imagePosition.x = Float(-Nodes.WALL_WIDTH) 
+                let offset = (-wallGeometry.length / 3)
+                imagePosition.z = Float(offset) * Float(((i + 2) % 3) - 1)
+                imageNode.position = imagePosition
+                wallNode.addChildNode(imageNode)
+                imageNode.renderingOrder = 200
+            }
+            if i > 8 && i < 9 + doorWalls.count, let wallGeometry = doorWalls[i - 9].geometry as? SCNBox{
+                let wallNode = fullWalls[i - 9]
+                
+                
+            }
+            
+            
+        }
+        
+        
         
     }
     
