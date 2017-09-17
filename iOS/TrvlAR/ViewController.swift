@@ -11,6 +11,9 @@ import UIKit
 import SceneKit
 import ARKit
 
+let toggleDataShowHideNotification = Notification.Name("ToggleDataShowHideNotification")
+let toggleDataActionUpdatesNotification = Notification.Name("ToggleDataActionUpdatesNotification")
+
 class ViewController: UIViewController, ARSCNViewDelegate {
 	
     @IBOutlet weak var sceneView: ARSCNView!
@@ -18,19 +21,45 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     var debuggingLabel = UILabel()
 	var portals = [Portal]()
 	
+    var dataVC: DataViewController? = nil
+    var dataYOffset: CGFloat = 110
+    
+    var tapGesture = UITapGestureRecognizer()
+    var threeFingerTap = UITapGestureRecognizer()
+    var panGesture = UIPanGestureRecognizer()
+    var dataVisible = false
+    var dataSize = CGSize()
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if let dataVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "DataVC") as? DataViewController{
+            self.dataVC = dataVC
+            
+            dataVC.view.frame =  CGRect(x: 50, y: 0, width: UIScreen.main.bounds.width - 100, height: UIScreen.main.bounds.height - 200)
+            dataSize = dataVC.view.frame.size
+            dataVC.view.frame.origin.y = self.view.frame.height - self.dataYOffset
+            self.addChildViewController(dataVC)
+            self.view.addSubview(dataVC.view)
+            dataVC.didMove(toParentViewController: self)
+            self.panGesture = UIPanGestureRecognizer(target: self, action: #selector(ViewController.handlePanGesture(_:)))
+            dataVC.view.addGestureRecognizer(self.panGesture)
+            
+            NotificationCenter.default.addObserver(forName: toggleDataShowHideNotification, object: nil, queue: nil, using: { (notification) in
+                self.toggleState()
+            })
+            
+        }
         
         sceneView.delegate = self
         //        sceneView.automaticallyUpdatesLighting = false
         
-        let tap = UITapGestureRecognizer()
-        tap.numberOfTouchesRequired = 1
-        tap.addTarget(self, action: #selector(didTap))
-        sceneView.addGestureRecognizer(tap)
+        tapGesture = UITapGestureRecognizer()
+        tapGesture.numberOfTouchesRequired = 1
+        tapGesture.addTarget(self, action: #selector(didTap))
+        sceneView.addGestureRecognizer(tapGesture)
         
         //Three Finger Tap for Reset
-        let threeFingerTap = UITapGestureRecognizer()
+        threeFingerTap = UITapGestureRecognizer()
         threeFingerTap.numberOfTouchesRequired = 3
         threeFingerTap.addTarget(self, action: #selector(didThreeFingerTap))
         sceneView.addGestureRecognizer(threeFingerTap)
@@ -47,10 +76,12 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         //        sceneView.addSubview(textField)
         
         //Debugging Label
-        debuggingLabel.frame = CGRect(x: 0, y: self.view.frame.height-44, width: 400, height: 44)
-        debuggingLabel.backgroundColor = .black;
-        debuggingLabel.textColor = .white;
+        debuggingLabel.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 30)
+        debuggingLabel.backgroundColor = UIColor(white: 0.8, alpha: 0.2)
+        debuggingLabel.textColor = .white
         view.addSubview(debuggingLabel)
+        AzureAPIManager.shared().debugLabel = debuggingLabel
+
     }
     
     // this func from Apple ARKit placing objects demo
@@ -61,7 +92,15 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 //            }
         }
         sceneView.scene.lightingEnvironment.intensity = intensity
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillAppear), name: Notification.Name.UIKeyboardWillShow, object: nil)
     }
+    
+    @objc func keyboardWillAppear() {
+        if self.dataVisible == false{
+            self.toggle(visible: true)
+        }
+    }
+    
     
     func getConfiguration() -> ARWorldTrackingConfiguration {
         let configuration = ARWorldTrackingConfiguration()
@@ -77,19 +116,29 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
+        NotificationCenter.default.removeObserver(self)
         sceneView.session.pause()
     }
     
     var searchQuery = "Honolulu"
+    var existsPortal = false
     
-
     @objc func didTap(_ sender:UITapGestureRecognizer) {
 		guard sender.numberOfTouches == 1 else { return }
         debuggingLabel.text = "Tap, tapped."
         let location = sender.location(in: sceneView)
         
+        if self.dataVC?.searchTextField.text != ""{
+            self.searchQuery = (self.dataVC?.searchTextField.text!)!
+        }else{
+            self.searchQuery = (self.dataVC?.searchTextField.placeholder!)!
+        }
+        
         print("didTap \(location)")
+        if existsPortal {
+            print("Portal already exists")
+            self.debuggingLabel.text = "Portal already exists"
+        }
         
         let hitTestResults = sceneView.hitTest(location, types: [.featurePoint, .existingPlaneUsingExtent])
         
@@ -103,7 +152,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             var worldCoord = SCNVector3Make(transform.columns.3.x, transform.columns.3.y, transform.columns.3.z)
             worldCoord.z -= 2
             
-
+            existsPortal = true
 			
 			let unwrappedCoord = sceneView.session.currentFrame?.camera.transform.columns.3
 			guard let camCoord = unwrappedCoord else { return }
@@ -317,9 +366,11 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         debuggingLabel.text = "World Reset"
         //sceneView.session.pause()
         
+        self.sceneView.scene.rootNode.childNodes.forEach{ $0.removeFromParentNode()}
 //        sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
 //            node.removeFromParentNode()}
         sceneView.session.run(getConfiguration(), options: [.resetTracking, .removeExistingAnchors])
+        self.existsPortal = false
     }
 }
 
@@ -481,4 +532,78 @@ class Portal {
         }
     }
 }
+
+
+
+extension ViewController: UIGestureRecognizerDelegate{
+    func toggle(visible:Bool ){
+        if let dataVC = self.dataVC {
+            print("Animating History State Change")
+            UIView.animate(withDuration: 1.0, delay: 0.0, usingSpringWithDamping: 0.9, initialSpringVelocity: 5.0, options: .curveEaseOut, animations: {
+                
+                if visible == true{
+                    dataVC.view.frame = CGRect(origin: CGPoint.zero, size: self.dataSize)
+                    dataVC.view.center = self.view.center
+                }else if visible == false{
+                    dataVC.view.frame.origin.y = self.view.frame.height - self.dataYOffset
+                    self.dataVC?.searchTextField.resignFirstResponder()
+                }
+            }, completion:{ (finished) in
+                NotificationCenter.default.post(name: toggleDataActionUpdatesNotification, object: visible)
+            })
+            self.dataVisible = visible
+            
+        }
+    }
+    
+    func toggleState(){
+        if self.dataVisible == true{
+            toggle(visible: false)
+        }else{
+            toggle(visible: true)
+        }
+    }
+    
+    
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        if gestureRecognizer == tapGesture || gestureRecognizer == threeFingerTap{
+            if let dataVC = self.dataVC{
+                return  dataVC.view.frame.contains(gestureRecognizer.location(in: self.view)) == false
+            }
+        }
+        return true
+    }
+    
+    @objc func handlePanGesture(_ recognizer: UIPanGestureRecognizer){
+        if let dataVC = self.dataVC{
+            switch recognizer.state {
+            case .began:
+                print("Began sliding VC")
+            case .changed:
+                let translation = recognizer.translation(in: view).y
+                dataVC.view.center.y += translation
+                recognizer.setTranslation(CGPoint.zero, in: view)
+            case .ended:
+                if abs(recognizer.velocity(in: view).y) > 200{
+                    if recognizer.velocity(in: view).y < -200{
+                        toggle(visible: true)
+                    }else if recognizer.velocity(in: view).y > 200{
+                        toggle(visible: false)
+                    }
+                }else{
+                    if dataVC.view.center.y > self.view.frame.height / 2.0{
+                        toggle(visible: false)
+                    }else{
+                        toggle(visible: true)
+                    }
+                }
+            default:
+                break
+            }
+        }
+    }
+    
+}
+
+
 

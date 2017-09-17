@@ -15,7 +15,7 @@ class AzureAPIManager: NSObject {
         return URL(string: "http://trvlar.azurewebsites.net/")!
     }
     let session = URLSession.shared
-    
+    var debugLabel: UILabel?
     static var sharedInstance: AzureAPIManager = {
         let apiManager = AzureAPIManager()
         
@@ -31,6 +31,7 @@ class AzureAPIManager: NSObject {
         print("Get pictures called")
         Alamofire.request(azureURL.appendingPathComponent("get_pictures?location=\(location)")).responseJSON { (response) in
             if let json = response.data {
+                self.debugLabel?.text = "\(location) pictures found"
                 let data = JSON(data: json)
                 print("Data response received")
                 print(data)
@@ -56,6 +57,7 @@ class AzureAPIManager: NSObject {
                         print("Retrieving Image \(item.2)")
                         self.retrievePicture(search: item, completionHandler: { (imageResult) in
                             print("\(count) Images left to retrieve")
+                            self.debugLabel?.text = "\(count) Images left to retrieve"
                             count -= 1
                             if imageResult != nil{
                                 var caption = imageResult!.1
