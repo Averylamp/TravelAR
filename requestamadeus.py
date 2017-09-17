@@ -135,7 +135,11 @@ def get_low_fare(dest_city):
 		# 	fares[DEPARTURE_DATE] = [parsed["results"][0]["fare"]["total_price"], parsed["currency"], parsed["results"][0]["itineraries"][0]["outbound"]["flights"][0]["marketing_airline"]]
 
 		if low_fare.status_code != 200:
-			return "Error getting low fare"
+			# return "Error getting low fare"
+			with open('saved_responses.json') as data_file:
+				my_data = json.load(data_file)
+				print(my_data[0][0]["fares"])
+				return my_data[0][0]["fares"]
 		else:
 			parsed = json.loads(low_fare.text)
 			# fares[DEPARTURE_DATE] = [parsed["results"][0]["price"], parsed["currency"], parsed["results"][0]["airline"]]
