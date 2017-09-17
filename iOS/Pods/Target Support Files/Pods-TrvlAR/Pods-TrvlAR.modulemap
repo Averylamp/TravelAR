@@ -1,0 +1,6 @@
+framework module Pods_TrvlAR {
+  umbrella header "Pods-TrvlAR-umbrella.h"
+
+  export *
+  module * { export * }
+}

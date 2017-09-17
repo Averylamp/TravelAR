@@ -49,6 +49,10 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         debuggingLabel.backgroundColor = .black;
         debuggingLabel.textColor = .white;
         view.addSubview(debuggingLabel)
+        
+//        AzureAPIManager.shared().getPictures(location: "Boston") { (response) in
+//            print(response)
+//        }
     }
     
     // this func from Apple ARKit placing objects demo
@@ -92,7 +96,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let hitTestResults = sceneView.hitTest(location, types: [.featurePoint, .existingPlaneUsingExtent])
         
         if let closestResult = hitTestResults.first {
-            print("2----------------")
+            self.debuggingLabel.text = "Added Portal"
+            
             // Get Coordinates of HitTest
             let transform : matrix_float4x4 = closestResult.worldTransform
             //sceneView.session.add(anchor: ARAnchor(transform: transform))
@@ -208,7 +213,16 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                                             worldCoord.z - Float(Nodes.WALL_LENGTH))
             lightNode.constraints = [constraint]
             sceneView.scene.rootNode.addChildNode(lightNode)
-            addImagesToRoom(images: [(#imageLiteral(resourceName: "cat0"), "Cat 1"),(#imageLiteral(resourceName: "cat1"), "Cat 2"),(#imageLiteral(resourceName: "cat2"), "Cat 3"),(#imageLiteral(resourceName: "cat3"), "Cat 4"),(#imageLiteral(resourceName: "cat4"), "Cat 5"),(#imageLiteral(resourceName: "cat5"), "Cat 6"),(#imageLiteral(resourceName: "cat6"), "Cat 7"),(#imageLiteral(resourceName: "cat7"), "Cat 8"),(#imageLiteral(resourceName: "cat8"), "Cat 9")])
+            AzureAPIManager.shared().getPictures(location: "Boston", completionHandler: { (results) in
+                //if results != nil{
+                    var images = [(UIImage, String)]()
+                    results.forEach{
+                        images.append($0!)
+                    }
+                    self.addImagesToRoom(images: images)
+                //}
+            })
+//            addImagesToRoom(images: [(#imageLiteral(resourceName: "cat0"), "Cat 1"),(#imageLiteral(resourceName: "cat1"), "Cat 2"),(#imageLiteral(resourceName: "cat2"), "Cat 3"),(#imageLiteral(resourceName: "cat3"), "Cat 4"),(#imageLiteral(resourceName: "cat4"), "Cat 5"),(#imageLiteral(resourceName: "cat5"), "Cat 6"),(#imageLiteral(resourceName: "cat6"), "Cat 7"),(#imageLiteral(resourceName: "cat7"), "Cat 8"),(#imageLiteral(resourceName: "cat8"), "Cat 9")])
         }
     }
     
@@ -221,7 +235,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         for i in 0..<images.count{
             let image = images[i].0
             let caption = images[i].1
-            var imageNode = SCNNode()
+            let imageNode = SCNNode()
             if i == 0, let wallNode = fullWalls[0].childNode(withName: "WallSegment", recursively: false), let wallGeometry = wallNode.geometry as? SCNBox {
                 let imageHtoWRatio = image.size.height / image.size.width
                 let boxHtoWRatio:CGFloat = (wallGeometry.height / wallGeometry.length)
@@ -254,7 +268,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             if 0 < i, i < 7, let wallNode = fullWalls[(i + 2) / 3].childNode(withName: "WallSegment", recursively: false), let wallGeometry = wallNode.geometry as? SCNBox{
                 let imageHtoWRatio = image.size.height / image.size.width
                 
-                let imageWidth = (wallGeometry.length / 3) * 0.8 // Spacing factor
+                let imageWidth = (wallGeometry.length / 3) * 0.9 // Spacing factor
                 let imageHeight = imageWidth * imageHtoWRatio
                 print("Image, Height: \(imageHeight), Width: \(imageWidth)")
                 let imageNodeGeometry = SCNBox(width: Nodes.WALL_WIDTH, height: imageHeight, length: imageWidth, chamferRadius: 0.1)
@@ -295,7 +309,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             }
             if i != 0{
                 let textGeometry = SCNText(string: caption, extrusionDepth: CGFloat(0.01))
-                var font = UIFont(name: "Avenir-Roman", size: 0.1)
+                var font = UIFont(name: "Avenir-Roman", size: 0.06)
                 font = font?.withTraits(traits: .traitBold)
                 textGeometry.font = font
                 textGeometry.alignmentMode = kCAAlignmentCenter
@@ -315,6 +329,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 }
                 textNode.position = textPosition
                 textNode.eulerAngles = SCNVector3(0, 270.0.degreesToRadians, 0)
+                textNode.renderingOrder = 200
                 //            textNode.scale = SCNVector3Make(0.5, 0.5, 0.5)
                 imageNode.addChildNode(textNode)
             }
