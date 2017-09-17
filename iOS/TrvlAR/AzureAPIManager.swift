@@ -32,6 +32,7 @@ class AzureAPIManager: NSObject {
         Alamofire.request(azureURL.appendingPathComponent("get_pictures?location=\(location)")).responseJSON { (response) in
             if let json = response.data {
                 let data = JSON(data: json)
+                
                 print(data)
                 if var fullJSONArray = data.array {
                     if fullJSONArray.count > 9 {
@@ -53,7 +54,11 @@ class AzureAPIManager: NSObject {
                             print("\(count) Images left to retrieve")
                             count -= 1
                             if imageResult != nil{
-                                finalResults[imageResult!.2] = (imageResult!.0, imageResult!.1)
+                                var caption = imageResult!.1
+                                if caption.contains(location + " "){
+                                    caption = caption.replacingOccurrences(of: location + " ", with: "")
+                                }
+                                finalResults[imageResult!.2] = (imageResult!.0, caption)
                                 if count == 0{
                                     print("All images retrieved")
                                     completionHandler(finalResults)
@@ -65,6 +70,9 @@ class AzureAPIManager: NSObject {
                         })
                     }
                     //                    self.retrieveAllPictures(results: resultingArray, completionHandler: completionHandler)
+                }else{
+                    print("FAILED TO RETRIEVE IMAGES")
+                    completionHandler([])
                 }
             }
         }

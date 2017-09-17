@@ -22,7 +22,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         super.viewDidLoad()
         
         sceneView.delegate = self
-        sceneView.automaticallyUpdatesLighting = false
+        //        sceneView.automaticallyUpdatesLighting = false
         
         let tap = UITapGestureRecognizer()
         tap.numberOfTouchesRequired = 1
@@ -34,32 +34,31 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         threeFingerTap.numberOfTouchesRequired = 3
         threeFingerTap.addTarget(self, action: #selector(didThreeFingerTap))
         sceneView.addGestureRecognizer(threeFingerTap)
-		
-		//Text Field
-		let textField = UITextField()
-		textField.frame = CGRect(x: 0, y: 0, width: 200, height: 44)
-		textField.center = view.center
-		textField.textAlignment = .center
-		textField.placeholder = "Enter Location"
-		textField.delegate = self
-		textField.returnKeyType = .done
-		textField.font = UIFont.systemFont(ofSize: 30)
-		sceneView.addSubview(textField)
-		
+        
+        //        //Text Field
+        //        let textField = UITextField()
+        //        textField.frame = CGRect(x: 0, y: 0, width: 200, height: 44)
+        //        textField.center = view.center
+        //        textField.textAlignment = .center
+        //        textField.placeholder = "Enter a Location"
+        //        textField.delegate = self
+        //        textField.returnKeyType = .done
+        //        textField.font = UIFont.systemFont(ofSize: 30)
+        //        sceneView.addSubview(textField)
+        
         //Debugging Label
         debuggingLabel.frame = CGRect(x: 0, y: self.view.frame.height-44, width: 400, height: 44)
         debuggingLabel.backgroundColor = .black;
         debuggingLabel.textColor = .white;
         view.addSubview(debuggingLabel)
-
     }
     
     // this func from Apple ARKit placing objects demo
     func enableEnvironmentMapWithIntensity(_ intensity: CGFloat) {
         if sceneView.scene.lightingEnvironment.contents == nil {
-            if let environmentMap = UIImage(named: "Media.scnassets/environment_blur.exr") {
-                sceneView.scene.lightingEnvironment.contents = environmentMap
-            }
+//            if let environmentMap = UIImage(named: "Media.scnassets/environment_blur.exr") {
+//                sceneView.scene.lightingEnvironment.contents = environmentMap
+//            }
         }
         sceneView.scene.lightingEnvironment.intensity = intensity
     }
@@ -67,7 +66,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     func getConfiguration() -> ARWorldTrackingConfiguration {
         let configuration = ARWorldTrackingConfiguration()
         configuration.planeDetection = .horizontal
-        configuration.isLightEstimationEnabled = true
+        //configuration.isLightEstimationEnabled = true
         return configuration
     }
     
@@ -82,6 +81,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.session.pause()
     }
     
+    var searchQuery = "Honolulu"
+    
+
     @objc func didTap(_ sender:UITapGestureRecognizer) {
         
         debuggingLabel.text = "Tap, tapped."
@@ -97,11 +99,14 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             // Get Coordinates of HitTest
             let transform : matrix_float4x4 = closestResult.worldTransform
             //sceneView.session.add(anchor: ARAnchor(transform: transform))
-			
+
+            var worldCoord = SCNVector3Make(transform.columns.3.x, transform.columns.3.y, transform.columns.3.z)
+            worldCoord.z -= 2
+	
 			let unwrappedCoord = sceneView.session.currentFrame?.camera.transform.columns.3
 			guard let camCoord = unwrappedCoord else { return }
 			
-			let worldCoord = SCNVector3Make(camCoord.x, camCoord.y, camCoord.z+1)
+			//let worldCoord = SCNVector3Make(camCoord.x, camCoord.y, camCoord.z+1)
 			
             //let worldCoord = SCNVector3Make(transform.columns.3.x, transform.columns.3.y, transform.columns.3.z)
 			
@@ -117,6 +122,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             }
             newPortal.fullWalls = [SCNNode]()
             newPortal.doorWalls = [SCNNode]()
+            newPortal.sceneView = self.sceneView
             
             let wallNode = SCNNode()
             wallNode.position = worldCoord
@@ -168,16 +174,39 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             
             let aboveDoorNode = Nodes.wallSegmentNode(length: Nodes.DOOR_WIDTH,
                                                       height: Nodes.WALL_HEIGHT - Nodes.DOOR_HEIGHT)
+            
+            let textGeometry = SCNText(string: searchQuery, extrusionDepth: CGFloat(0.01))
+            var font = UIFont(name: "Avenir-Roman", size: 0.2)
+            font = font?.withTraits(traits: .traitBold)
+            textGeometry.font = font
+            textGeometry.alignmentMode = kCAAlignmentCenter
+            textGeometry.firstMaterial?.diffuse.contents = UIColor.black
+            textGeometry.firstMaterial?.specular.contents = UIColor.white
+            textGeometry.firstMaterial?.isDoubleSided = true
+            // bubble.flatness // setting this too low can cause crashes.
+            textGeometry.chamferRadius = CGFloat(0.01)
+            
+            // Text Node
+            let (minBound, maxBound) = textGeometry.boundingBox
+            let textNode = SCNNode(geometry: textGeometry)
+            var textPosition = SCNVector3Make(0, Float(Nodes.WALL_WIDTH / 2.0), 0)
+            textNode.position = textPosition
+            wallNode.addChildNode(textNode)
+//            textNode.eulerAngles = SCNVector3(0, 90.degreesToRadians, 0)
+            
             aboveDoorNode.eulerAngles = SCNVector3(0, 270.0.degreesToRadians, 0)
             aboveDoorNode.position = SCNVector3(0,
                                                 Float(Nodes.WALL_HEIGHT) - Float(Nodes.WALL_HEIGHT - Nodes.DOOR_HEIGHT) * 0.5,
                                                 Float(Nodes.WALL_LENGTH) * 1.5)
             wallNode.addChildNode(aboveDoorNode)
             
-            let floorNode = Nodes.plane(pieces: 3,
-                                        maskYUpperSide: false)
-            floorNode.position = SCNVector3(0, 0, 0)
-            wallNode.addChildNode(floorNode)
+            
+            
+            
+            newPortal.floorNode = Nodes.plane(pieces: 3,
+                                    maskYUpperSide: false)
+            newPortal.floorNode!.position = SCNVector3(0, 0, 0)
+            wallNode.addChildNode(newPortal.floorNode!)
             
             let roofNode = Nodes.plane(pieces: 3,
                                        maskYUpperSide: true)
@@ -188,6 +217,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             
             
             // we would like shadows from inside the portal room to shine onto the floor of the camera image(!)
+
 //            let floor = SCNFloor()
 //            floor.reflectivity = 0
 //            floor.firstMaterial?.diffuse.contents = UIColor.white
@@ -196,10 +226,11 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 //            floorShadowNode.position = worldCoord
 //            sceneView.scene.rootNode.addChildNode(floorShadowNode)
 			
-            
+
             let light = SCNLight()
             // [SceneKit] Error: shadows are only supported by spot lights and directional lights
-            light.type = .ambient
+            light.type  = .spot
+            //            light.type = .ambient
             light.spotInnerAngle = 70
             light.spotOuterAngle = 120
             light.zNear = 0.00001
@@ -217,19 +248,26 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                                             worldCoord.z - Float(Nodes.WALL_LENGTH))
             //lightNode.constraints = [constraint]
             sceneView.scene.rootNode.addChildNode(lightNode)
-            AzureAPIManager.shared().getPictures(location: "Boston", completionHandler: { (results) in
-                //if results != nil{
+
+            AzureAPIManager.shared().getPictures(location: searchQuery, completionHandler: { (results) in
+                if  results.count > 0{
                     var images = [(UIImage, String)]()
                     results.forEach{
                         images.append($0!)
                     }
+
                     newPortal.addImagesToRoom(images: images)
-                //}
+                }else{
+                    newPortal.addImagesToRoom(images: [(#imageLiteral(resourceName: "cat0"), "Cat 1"),(#imageLiteral(resourceName: "cat1"), "Cat 2"),(#imageLiteral(resourceName: "cat2"), "Cat 3"),(#imageLiteral(resourceName: "cat3"), "Cat 4"),(#imageLiteral(resourceName: "cat4"), "Cat 5"),(#imageLiteral(resourceName: "cat5"), "Cat 6"),(#imageLiteral(resourceName: "cat6"), "Cat 7"),(#imageLiteral(resourceName: "cat7"), "Cat 8"),(#imageLiteral(resourceName: "cat8"), "Cat 9")])
+                }
             })
-//            addImagesToRoom(images: [(#imageLiteral(resourceName: "cat0"), "Cat 1"),(#imageLiteral(resourceName: "cat1"), "Cat 2"),(#imageLiteral(resourceName: "cat2"), "Cat 3"),(#imageLiteral(resourceName: "cat3"), "Cat 4"),(#imageLiteral(resourceName: "cat4"), "Cat 5"),(#imageLiteral(resourceName: "cat5"), "Cat 6"),(#imageLiteral(resourceName: "cat6"), "Cat 7"),(#imageLiteral(resourceName: "cat7"), "Cat 8"),(#imageLiteral(resourceName: "cat8"), "Cat 9")])
+            //            addImagesToRoom(images: [(#imageLiteral(resourceName: "cat0"), "Cat 1"),(#imageLiteral(resourceName: "cat1"), "Cat 2"),(#imageLiteral(resourceName: "cat2"), "Cat 3"),(#imageLiteral(resourceName: "cat3"), "Cat 4"),(#imageLiteral(resourceName: "cat4"), "Cat 5"),(#imageLiteral(resourceName: "cat5"), "Cat 6"),(#imageLiteral(resourceName: "cat6"), "Cat 7"),(#imageLiteral(resourceName: "cat7"), "Cat 8"),(#imageLiteral(resourceName: "cat8"), "Cat 9")])
         }
     }
     
+    var imageNodes = [SCNNode]()
+    
+
     /// MARK: - ARSCNViewDelegate
     
     // this func from Apple ARKit placing objects demo
@@ -247,160 +285,193 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             }
         }
     }
-	
-	func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
-		switch camera.trackingState {
-		case .notAvailable:
-			debuggingLabel.text = "Major Problem. Abort!"
-		case .normal:
-			debuggingLabel.text =  "All is good."
-		case .limited(.excessiveMotion):
-			debuggingLabel.text =  "Wow there buddy, slow down a bit."
-		case .limited(.insufficientFeatures):
-			debuggingLabel.text =  "Low detail; tracking will be limited."
-		case .limited(.initializing):
-			debuggingLabel.text =  "Warming Up..."
-		}
-	}
+    
+    func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
+        switch camera.trackingState {
+        case .notAvailable:
+            debuggingLabel.text = "Major Problem. Abort!"
+        case .normal:
+            debuggingLabel.text =  "All is good."
+        case .limited(.excessiveMotion):
+            debuggingLabel.text =  "Wow there buddy, slow down a bit."
+        case .limited(.insufficientFeatures):
+            debuggingLabel.text =  "Low detail; tracking will be limited."
+        case .limited(.initializing):
+            debuggingLabel.text =  "Warming Up..."
+        }
+    }
     
     
     // did update plane?
     func renderer(_ renderer: SCNSceneRenderer, willUpdate node: SCNNode, for anchor: ARAnchor) {
         
     }
-
+    
     @objc func didThreeFingerTap(_ sender:UITapGestureRecognizer) {
-		print("world reset")
+        print("world reset")
         debuggingLabel.text = "World Reset"
-		sceneView.session.pause()
-		sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
-			node.removeFromParentNode()}
+        //sceneView.session.pause()
+        sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
+            node.removeFromParentNode()}
         sceneView.session.run(getConfiguration(), options: [.resetTracking, .removeExistingAnchors])
     }
 }
 
 
 extension ViewController:UITextFieldDelegate {
-	
-	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-		textField.resignFirstResponder()
-		return true
-	}
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
 }
 
 class Portal {
 	var fullWalls = [SCNNode]()
 	var doorWalls = [SCNNode]()
-	
+	var floorNode:SCNNode?
 	var imageNodes = [SCNNode]()
+    var sceneView: ARSCNView?
 	
-	func addImagesToRoom(images: [(UIImage,  String)]){
-		imageNodes.forEach {
-			$0.removeFromParentNode()
-		}
-		let frameColor = UIColor.white
-		for i in 0..<images.count{
-			let image = images[i].0
-			let caption = images[i].1
-			let imageNode = SCNNode()
-			if i == 0, let wallNode = fullWalls[0].childNode(withName: "WallSegment", recursively: false), let wallGeometry = wallNode.geometry as? SCNBox {
-				let imageHtoWRatio = image.size.height / image.size.width
-				let boxHtoWRatio:CGFloat = (wallGeometry.height / wallGeometry.length)
-				var imageWidth:CGFloat = 0.0
-				var imageHeight:CGFloat = 0.0
-				if boxHtoWRatio > imageHtoWRatio{
-					imageWidth = wallGeometry.length
-					imageHeight = imageWidth * imageHtoWRatio
-				}else{
-					imageHeight = wallGeometry.height
-					imageWidth = imageHeight / imageHtoWRatio
-					
-				}
-				print("Image, Height: \(imageHeight), Width: \(imageWidth)")
-				
-				let imageNodeGeometry = SCNBox(width: Nodes.WALL_WIDTH, height: imageHeight, length: imageWidth, chamferRadius: 0.1)
-				
-				let frameMaterial = SCNMaterial()
-				frameMaterial.diffuse.contents = frameColor
-				let imageMaterial = SCNMaterial()
-				imageMaterial.diffuse.contents = image
-				imageNodeGeometry.materials = [frameMaterial, frameMaterial, frameMaterial, imageMaterial, frameMaterial, frameMaterial]
-				imageNode.geometry = imageNodeGeometry
-				var imagePosition = wallNode.position
-				imagePosition.x = Float(-Nodes.WALL_WIDTH)
-				imageNode.position = imagePosition
-				wallNode.addChildNode(imageNode)
-				imageNode.renderingOrder = 200
-			}
-			if 0 < i, i < 7, let wallNode = fullWalls[(i + 2) / 3].childNode(withName: "WallSegment", recursively: false), let wallGeometry = wallNode.geometry as? SCNBox{
-				let imageHtoWRatio = image.size.height / image.size.width
-				
-				let imageWidth = (wallGeometry.length / 3) * 0.9 // Spacing factor
-				let imageHeight = imageWidth * imageHtoWRatio
-				print("Image, Height: \(imageHeight), Width: \(imageWidth)")
-				let imageNodeGeometry = SCNBox(width: Nodes.WALL_WIDTH, height: imageHeight, length: imageWidth, chamferRadius: 0.1)
-				
-				let frameMaterial = SCNMaterial()
-				frameMaterial.diffuse.contents = frameColor
-				let imageMaterial = SCNMaterial()
-				imageMaterial.diffuse.contents = image
-				imageNodeGeometry.materials = [frameMaterial, frameMaterial, frameMaterial, imageMaterial, frameMaterial, frameMaterial]
-				imageNode.geometry = imageNodeGeometry
-				var imagePosition = wallNode.position
-				imagePosition.x = Float(-Nodes.WALL_WIDTH)
-				let offset = (-wallGeometry.length / 3)
-				imagePosition.z = Float(offset) * Float(((i + 2) % 3) - 1)
-				imageNode.position = imagePosition
-				wallNode.addChildNode(imageNode)
-				imageNode.renderingOrder = 200
-			}
-			if  i - 7 >= 0, i - 7 < 9, i - 7 < doorWalls.count, let wallNode = doorWalls[i - 7].childNode(withName: "WallSegment", recursively: false), let wallGeometry = wallNode.geometry as? SCNBox{
-				let imageHtoWRatio = image.size.height / image.size.width
-				
-				let imageWidth = wallGeometry.length * 0.8 // Spacing factor
-				let imageHeight = imageWidth * imageHtoWRatio
-				print("Image, Height: \(imageHeight), Width: \(imageWidth)")
-				let imageNodeGeometry = SCNBox(width: Nodes.WALL_WIDTH, height: imageHeight, length: imageWidth, chamferRadius: 0.1)
-				
-				let frameMaterial = SCNMaterial()
-				frameMaterial.diffuse.contents = frameColor
-				let imageMaterial = SCNMaterial()
-				imageMaterial.diffuse.contents = image
-				imageNodeGeometry.materials = [frameMaterial, frameMaterial, frameMaterial, imageMaterial, frameMaterial, frameMaterial]
-				imageNode.geometry = imageNodeGeometry
-				var imagePosition = wallNode.position
-				imagePosition.x = Float(-Nodes.WALL_WIDTH)
-				imageNode.position = imagePosition
-				wallNode.addChildNode(imageNode)
-				imageNode.renderingOrder = 200
-			}
-			if i != 0{
-				let textGeometry = SCNText(string: caption, extrusionDepth: CGFloat(0.01))
-				var font = UIFont(name: "Avenir-Roman", size: 0.06)
-				font = font?.withTraits(traits: .traitBold)
-				textGeometry.font = font
-				textGeometry.alignmentMode = kCAAlignmentCenter
-				textGeometry.firstMaterial?.diffuse.contents = UIColor.black
-				textGeometry.firstMaterial?.specular.contents = UIColor.white
-				textGeometry.firstMaterial?.isDoubleSided = true
-				// bubble.flatness // setting this too low can cause crashes.
-				textGeometry.chamferRadius = CGFloat(0.01)
-				
-				// Text Node
-				let (minBound, maxBound) = textGeometry.boundingBox
-				let textNode = SCNNode(geometry: textGeometry)
-				textNode.pivot = SCNMatrix4MakeTranslation((maxBound.x - minBound.x)/2,(maxBound.y - minBound.y)/2,0)
-				var textPosition = SCNVector3Make(0, 0, 0)
-				if let _ = imageNode.geometry as? SCNBox{
-					textPosition.y -= 0.3
-				}
-				textNode.position = textPosition
-				textNode.eulerAngles = SCNVector3(0, 270.0.degreesToRadians, 0)
-				textNode.renderingOrder = 200
-				//            textNode.scale = SCNVector3Make(0.5, 0.5, 0.5)
-				imageNode.addChildNode(textNode)
-			}
-		}
-	}
+    func addImagesToRoom(images: [(UIImage,  String)]){
+        imageNodes.forEach {
+            $0.removeFromParentNode()
+        }
+        let frameColor = UIColor.black
+        for i in 0..<images.count{
+            let image = images[i].0
+            let caption = images[i].1
+            var imageNode = SCNNode()
+            if i == 0, let wallNode = fullWalls[0].childNode(withName: "WallSegment", recursively: false), let wallGeometry = wallNode.geometry as? SCNBox {
+                let imageHtoWRatio = image.size.height / image.size.width
+                let boxHtoWRatio:CGFloat = (wallGeometry.height / wallGeometry.length)
+                var imageWidth:CGFloat = 0.0
+                var imageHeight:CGFloat = 0.0
+                if boxHtoWRatio > imageHtoWRatio{
+                    imageWidth = wallGeometry.length
+                    imageHeight = imageWidth * imageHtoWRatio
+                }else{
+                    imageHeight = wallGeometry.height
+                    imageWidth = imageHeight / imageHtoWRatio
+                    
+                }
+                print("Image, Height: \(imageHeight), Width: \(imageWidth)")
+                
+                let imageNodeGeometry = SCNBox(width: Nodes.WALL_WIDTH, height: imageHeight, length: imageWidth, chamferRadius: 0.1)
+                
+                let frameMaterial = SCNMaterial()
+                frameMaterial.diffuse.contents = frameColor
+                let imageMaterial = SCNMaterial()
+                imageMaterial.diffuse.contents = image
+                imageNodeGeometry.materials = [frameMaterial, frameMaterial, frameMaterial, imageMaterial, frameMaterial, frameMaterial]
+                imageNode.geometry = imageNodeGeometry
+                var imagePosition = wallNode.position
+                imagePosition.x = Float(-Nodes.WALL_WIDTH)
+                imageNode.position = imagePosition
+                wallNode.addChildNode(imageNode)
+                imageNode.renderingOrder = 200
+            }
+            if 0 < i, i < 7, let wallNode = fullWalls[(i + 2) / 3].childNode(withName: "WallSegment", recursively: false), let wallGeometry = wallNode.geometry as? SCNBox{
+                let imageHtoWRatio = image.size.height / image.size.width
+                
+                let imageWidth = (wallGeometry.length / 3) * 0.9 // Spacing factor
+                let imageHeight = imageWidth * imageHtoWRatio
+                print("Image, Height: \(imageHeight), Width: \(imageWidth)")
+                let imageNodeGeometry = SCNBox(width: Nodes.WALL_WIDTH, height: imageHeight, length: imageWidth, chamferRadius: 0.1)
+                
+                let frameMaterial = SCNMaterial()
+                frameMaterial.diffuse.contents = frameColor
+                let imageMaterial = SCNMaterial()
+                imageMaterial.diffuse.contents = image
+                imageNodeGeometry.materials = [frameMaterial, frameMaterial, frameMaterial, imageMaterial, frameMaterial, frameMaterial]
+                imageNode.geometry = imageNodeGeometry
+                var imagePosition = wallNode.position
+                imagePosition.x = Float(-Nodes.WALL_WIDTH)
+                let offset = (-wallGeometry.length / 3)
+                imagePosition.z = Float(offset) * Float(((i + 2) % 3) - 1)
+                imageNode.position = imagePosition
+                wallNode.addChildNode(imageNode)
+                imageNode.renderingOrder = 200
+            }
+            if  i - 7 >= 0, i - 7 < 9, i - 7 < doorWalls.count, let wallNode = doorWalls[i - 7].childNode(withName: "WallSegment", recursively: false), let wallGeometry = wallNode.geometry as? SCNBox{
+                let imageHtoWRatio = image.size.height / image.size.width
+                
+                let imageWidth = wallGeometry.length * 0.8 // Spacing factor
+                let imageHeight = imageWidth * imageHtoWRatio
+                print("Image, Height: \(imageHeight), Width: \(imageWidth)")
+                let imageNodeGeometry = SCNBox(width: Nodes.WALL_WIDTH, height: imageHeight, length: imageWidth, chamferRadius: 0.1)
+                
+                let frameMaterial = SCNMaterial()
+                frameMaterial.diffuse.contents = frameColor
+                let imageMaterial = SCNMaterial()
+                imageMaterial.diffuse.contents = image
+                imageNodeGeometry.materials = [frameMaterial, frameMaterial, frameMaterial, imageMaterial, frameMaterial, frameMaterial]
+                imageNode.geometry = imageNodeGeometry
+                var imagePosition = wallNode.position
+                imagePosition.x = Float(-Nodes.WALL_WIDTH)
+                imageNode.position = imagePosition
+                wallNode.addChildNode(imageNode)
+                imageNode.renderingOrder = 200
+            }
+            if i != 0{
+                let textGeometry = SCNText(string: caption, extrusionDepth: CGFloat(0.01))
+                var font = UIFont(name: "Futura", size: 0.05)
+                font = font?.withTraits(traits: .traitBold)
+                textGeometry.font = font
+                textGeometry.alignmentMode = kCAAlignmentCenter
+                textGeometry.firstMaterial?.diffuse.contents = UIColor.black
+                textGeometry.firstMaterial?.specular.contents = UIColor.white
+                textGeometry.firstMaterial?.isDoubleSided = true
+                // bubble.flatness // setting this too low can cause crashes.
+                textGeometry.chamferRadius = CGFloat(0.001)
+                
+                // Text Node
+                let (minBound, maxBound) = textGeometry.boundingBox
+                let textNode = SCNNode(geometry: textGeometry)
+                textNode.pivot = SCNMatrix4MakeTranslation((maxBound.x - minBound.x)/2,(maxBound.y - minBound.y)/2,0)
+                var textPosition = SCNVector3Make(0, 0, 0)
+                if let _ = imageNode.geometry as? SCNBox{
+                    textPosition.y -= 0.3
+                    textPosition.x -= 0.05
+                }
+                textNode.position = textPosition
+                textNode.eulerAngles = SCNVector3(0, 270.0.degreesToRadians, 0)
+                textNode.renderingOrder = 200
+                //            textNode.scale = SCNVector3Make(0.5, 0.5, 0.5)
+                imageNode.addChildNode(textNode)
+                
+            }
+            
+            //Light Node
+            if let floorNode = floorNode{
+                let light = SCNLight()
+                // [SceneKit] Error: shadows are only supported by spot lights and directional lights
+                light.type  = .spot
+                //            light.type = .ambient
+                light.spotInnerAngle = 70
+                light.spotOuterAngle = 120
+                light.zNear = 0.00001
+                light.zFar = 5
+                light.castsShadow = false
+                light.intensity = 0
+                let animation = CABasicAnimation(keyPath: "intensity")
+                animation.fromValue = 0
+                animation.toValue = 500
+                animation.duration = 3.0
+                light.addAnimation(animation, forKey: "intensity")
+                light.intensity = 500
+                //                    light.shadowRadius = 200
+                //                    light.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)
+                //                    light.shadowMode = .deferred
+                let constraint = SCNLookAtConstraint(target: imageNode)
+                constraint.isGimbalLockEnabled = true
+                let lightNode = SCNNode()
+                lightNode.light = light
+                lightNode.position = SCNVector3(floorNode.position.x, floorNode.position.y, floorNode.position.z)
+                lightNode.constraints = [constraint]
+                sceneView?.scene.rootNode.addChildNode(lightNode)
+            }
+        }
+    }
 }
 

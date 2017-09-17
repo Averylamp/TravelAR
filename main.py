@@ -10,6 +10,8 @@ from requestamadeus import *
 
 app = Flask(__name__)
 
+MICROSOFT_KEY = 'c4e8df438e7042f8856acc8f41f0fa21'
+
 @app.route('/')
 def default_route():
     # value = json.loads(jsonify(["testing json"]))
@@ -76,11 +78,26 @@ def get_pictures():
     # use string, number_of_images for these items to add keywords to image search
     # and number of images to return
     search_items = []
-    search_items.append(("", 1))
 
-    # grab one image from each attraction
-    for attraction in attractions:
-        search_items.append((" " + attraction, 1))
+
+    if isinstance(attractions, str):
+        search_items.append((" weather", 1))
+        search_items.append((" people", 1))
+        search_items.append((" attractions", 1))
+        search_items.append((" sports", 1))
+        search_items.append((" geography", 1))
+        search_items.append((" map", 1))
+        search_items.append((" resort", 1))
+        search_items.append((" culture", 1))
+        search_items.append((" sites", 1))
+    else:
+
+
+        search_items.append(("", 1))
+
+        # grab one image from each attraction
+        for attraction in attractions:
+            search_items.append((" " + attraction, 1))
 
     master_list = []
 
@@ -95,6 +112,8 @@ def get_pictures():
 # bing image search
 def bing_search(location_name, count):
 
+    global MICROSOFT_KEY
+
     headers = {
         # Request headers
         # key 1 of regular api - ethan (used to work)
@@ -106,7 +125,9 @@ def bing_search(location_name, count):
         # 'Ocp-Apim-Subscription-Key': 'fedcea6c97d841ac9105b8e9e1abc139',
 
         # key 1 of arlene's api
-        'Ocp-Apim-Subscription-Key': 'c4e8df438e7042f8856acc8f41f0fa21',
+        # 'c4e8df438e7042f8856acc8f41f0fa21'
+
+        'Ocp-Apim-Subscription-Key': MICROSOFT_KEY,
     }
 
     params = {

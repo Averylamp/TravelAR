@@ -33,7 +33,8 @@ final class Nodes {
                                  length: Nodes.WALL_LENGTH * CGFloat(pieces),
                                  chamferRadius: 0)
                 segment.firstMaterial?.diffuse.contents = #imageLiteral(resourceName: "hardwood")
-        segment.firstMaterial?.normal.contents = #imageLiteral(resourceName: "hardwoodNormal")
+        segment.firstMaterial?.ambient.contents = UIColor.darkGray
+//        segment.firstMaterial?.normal.contents = #imageLiteral(resourceName: "hardwoodNormal")
 //        segment.firstMaterial?.diffuse.contents = UIImage(named: "Media.scnassets/slipperystonework-albedo.png")
 //        segment.firstMaterial?.ambientOcclusion.contents = UIImage(named: "Media.scnassets/slipperystonework-ao.png")
 //        segment.firstMaterial?.metalness.contents = UIImage(named: "Media.scnassets/slipperystonework-metalness.png")
@@ -62,7 +63,7 @@ final class Nodes {
                                  height: height,
                                  length: length,
                                  chamferRadius: 0)
-        wallSegment.firstMaterial?.diffuse.contents = #imageLiteral(resourceName: "wood")
+        wallSegment.firstMaterial?.diffuse.contents = UIColor(red: 0.868, green: 0.839, blue: 0.746, alpha: 1.00)
 //        wallSegment.firstMaterial?.diffuse.contents = UIImage(named: "Media.scnassets/slipperystonework-albedo.png")
 //        wallSegment.firstMaterial?.ambientOcclusion.contents = UIImage(named: "Media.scnassets/slipperystonework-ao.png")
 //        wallSegment.firstMaterial?.metalness.contents = UIImage(named: "Media.scnassets/slipperystonework-metalness.png")
