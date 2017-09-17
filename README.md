@@ -12,3 +12,16 @@ Just about the best augmented reality travel app you've ever seen.
 - wolfram alpha (background information on the location)
 - 3 prizes for data viz
 
+### Using Azure (Flask) Endpoints
+
+##### Example Usage
+- http://trvlar.azurewebsites.net/get_pictures?location=denver
+- returns json object of names and images
+
+- http://trvlar.azurewebsites.net/trip_info?location=boston
+- returns flight information as dictionary
+
+#### Helpful Resources
+- https://docs.microsoft.com/en-us/azure/app-service-web/app-service-web-get-started-python
+- http://docs.python-requests.org/en/master/
+- http://docs.python-requests.org/en/master/user/quickstart/

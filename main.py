@@ -5,6 +5,9 @@ import json
 
 import requests
 
+# import requestamadeus
+from requestamadeus import *
+
 app = Flask(__name__)
 
 @app.route('/')
@@ -12,11 +15,12 @@ def default_route():
     # value = json.loads(jsonify(["testing json"]))
     return "Hello TrvlAR"
 
-@app.route('/flight', methods=['GET'])
-def get_flight():
-    print("testing flight")
-    return "Flight information"
-
+@app.route('/trip_info', methods=['GET'])
+def get_trip():
+    location = request.args.get('location', '')
+    info = remove_non_ascii(str(all_information(location)))
+    print(info)
+    return info
 
 # works with ?key=value pair key=location and value = name of location
 @app.route('/get_pictures', methods=['GET'])
@@ -25,14 +29,19 @@ def get_pictures():
 
     print("Getting pictures for location: %s" % location)
 
+    # get the attractions at this location
+    information = get_loc_information(get_airport_code(location))
+    attractions = get_attractions(str(information["latitude"]), str(information["longitude"]))
+    # print(attractions)
+
     # use string, number_of_images for these items to add keywords to image search
     # and number of images to return
     search_items = []
     search_items.append(("", 1))
-    search_items.append((" attraction", 1))
-    search_items.append((" weather", 1))
-    search_items.append((" people", 1))
-    search_items.append((" activity", 1))
+
+    # grab one image from each attraction
+    for attraction in attractions:
+        search_items.append((" " + attraction, 1))
 
     master_list = []
 
