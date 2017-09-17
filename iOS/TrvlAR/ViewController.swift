@@ -38,7 +38,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 		textField.frame = CGRect(x: 0, y: 0, width: 200, height: 44)
 		textField.center = view.center
 		textField.textAlignment = .center
-		textField.placeholder = "Enter a Location"
+		textField.placeholder = "Enter Location"
 		textField.delegate = self
 		textField.returnKeyType = .done
 		textField.font = UIFont.systemFont(ofSize: 30)
