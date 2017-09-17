@@ -223,6 +223,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         imageNodes.forEach {
             $0.removeFromParentNode()
         }
+        let frameColor = UIColor.white
         for i in 0..<images.count{
             let image = images[i]
             if i == 0, let wallNode = fullWalls[0].childNode(withName: "WallSegment", recursively: false), let wallGeometry = wallNode.geometry as? SCNBox {
@@ -244,7 +245,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 let imageNodeGeometry = SCNBox(width: Nodes.WALL_WIDTH, height: imageHeight, length: imageWidth, chamferRadius: 0.1)
                 
                 let frameMaterial = SCNMaterial()
-                frameMaterial.diffuse.contents = UIColor.white
+                frameMaterial.diffuse.contents = frameColor
                 let imageMaterial = SCNMaterial()
                 imageMaterial.diffuse.contents = image
                 imageNodeGeometry.materials = [frameMaterial, frameMaterial, frameMaterial, imageMaterial, frameMaterial, frameMaterial]
@@ -265,7 +266,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 let imageNodeGeometry = SCNBox(width: Nodes.WALL_WIDTH, height: imageHeight, length: imageWidth, chamferRadius: 0.1)
 
                 let frameMaterial = SCNMaterial()
-                frameMaterial.diffuse.contents = UIColor.white
+                frameMaterial.diffuse.contents = frameColor
                 let imageMaterial = SCNMaterial()
                 imageMaterial.diffuse.contents = image
                 imageNodeGeometry.materials = [frameMaterial, frameMaterial, frameMaterial, imageMaterial, frameMaterial, frameMaterial]
@@ -278,17 +279,28 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 wallNode.addChildNode(imageNode)
                 imageNode.renderingOrder = 200
             }
-            if i > 8 && i < 9 + doorWalls.count, let wallGeometry = doorWalls[i - 9].geometry as? SCNBox{
-                let wallNode = fullWalls[i - 9]
+            if  i - 7 >= 0, i - 7 < 9, i - 7 < doorWalls.count, let wallNode = doorWalls[i - 7].childNode(withName: "WallSegment", recursively: false), let wallGeometry = wallNode.geometry as? SCNBox{
+                let imageHtoWRatio = image.size.height / image.size.width
                 
+                let imageWidth = wallGeometry.length * 0.8 // Spacing factor
+                let imageHeight = imageWidth * imageHtoWRatio
+                print("Image, Height: \(imageHeight), Width: \(imageWidth)")
+                let imageNode = SCNNode()
+                let imageNodeGeometry = SCNBox(width: Nodes.WALL_WIDTH, height: imageHeight, length: imageWidth, chamferRadius: 0.1)
                 
+                let frameMaterial = SCNMaterial()
+                frameMaterial.diffuse.contents = frameColor
+                let imageMaterial = SCNMaterial()
+                imageMaterial.diffuse.contents = image
+                imageNodeGeometry.materials = [frameMaterial, frameMaterial, frameMaterial, imageMaterial, frameMaterial, frameMaterial]
+                imageNode.geometry = imageNodeGeometry
+                var imagePosition = wallNode.position
+                imagePosition.x = Float(-Nodes.WALL_WIDTH)
+                imageNode.position = imagePosition
+                wallNode.addChildNode(imageNode)
+                imageNode.renderingOrder = 200
             }
-            
-            
         }
-        
-        
-        
     }
     
     /// MARK: - ARSCNViewDelegate

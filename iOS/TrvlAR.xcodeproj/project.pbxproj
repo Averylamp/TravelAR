@@ -435,7 +435,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = F29E8CU7JT;
+				DEVELOPMENT_TEAM = R4DQ2L3FBV;
 				INFOPLIST_FILE = TrvlAR/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Isometric.TrvlAR;
@@ -450,7 +450,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = F29E8CU7JT;
+				DEVELOPMENT_TEAM = R4DQ2L3FBV;
 				INFOPLIST_FILE = TrvlAR/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Isometric.TrvlAR;
