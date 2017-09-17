@@ -58,6 +58,7 @@ def population(location):
     # print(remove_non_ascii(data.text))
 
     # return jsonify(data.text)
+    print(my_result)
     return my_result
 
 # works with ?key=value pair key=location and value = name of location
@@ -83,8 +84,12 @@ def get_pictures():
 
     master_list = []
 
+    # print(len(search_items))
+
     for i in search_items:
-        master_list.append(bing_search(location + i[0], i[1])[0])
+        search_val = bing_search(location + i[0], i[1])
+        if len(search_val) > 0:
+            master_list.append(search_val[0])
     return jsonify(master_list)
 
 # bing image search
@@ -92,7 +97,16 @@ def bing_search(location_name, count):
 
     headers = {
         # Request headers
-        'Ocp-Apim-Subscription-Key': 'fedcea6c97d841ac9105b8e9e1abc139',
+        # key 1 of regular api - ethan (used to work)
+        # 'Ocp-Apim-Subscription-Key': 'fedcea6c97d841ac9105b8e9e1abc139',
+
+
+
+        # key 1 of new api version - ethan
+        # 'Ocp-Apim-Subscription-Key': 'fedcea6c97d841ac9105b8e9e1abc139',
+
+        # key 1 of arlene's api
+        'Ocp-Apim-Subscription-Key': 'c4e8df438e7042f8856acc8f41f0fa21',
     }
 
     params = {
@@ -108,6 +122,8 @@ def bing_search(location_name, count):
 
         data = requests.get(url="https://api.cognitive.microsoft.com/bing/v5.0/images/search", params=params, headers=headers)
 
+        print(data.url)
+        print(data.status_code)
         json_array = json.loads(data.text) #this line won't work
 
         content_list = json_array['value']

@@ -30,6 +30,7 @@ Amadeus APIs
 - popular sites/destinations
 - lat / lon
 - airport and airport code
+- flights
 
 Microsoft Bing Image Search API
 - images of popular sites (as determined by Amadeus API)
