@@ -2,7 +2,10 @@ import requests
 import json
 from unidecode import unidecode
 
-APIKEY = "5caQqqQxp1RtA6TAQZGllELZ0Zr7RmBF"
+# APIKEY = "5caQqqQxp1RtA6TAQZGllELZ0Zr7RmBF"
+# APIKEY = "vu9eP7z9lld0HIjLsfGVT85AjYGJ0xHA"
+APIKEY = "ljUiaAOlDAkwAtTVgp1X2qtG1tdPLGAL"
+# APIKEY = "vu9eP7z9lld0HIjLsfGVT85AjYGJ0xHA"
 ORIGIN = "BOS"
 ONE_WEEK = "2017-09-24"
 ONE_MONTH = "2017-10-17"
@@ -81,17 +84,58 @@ def get_attractions(latitude, longitude):
 			points_of_interest.append(i["title"])
 		return points_of_interest
 
+# def get_low_fare(dest_city):
+# 	fares = {}
+# 	for DEPARTURE_DATE in [ONE_WEEK, ONE_MONTH, THREE_MONTHS]:
+# 		# low_fare_url = "http://api.sandbox.amadeus.com/v1.2/flights/extensive-search?origin=BOS&destination=" + dest_city + "&departure_date=" + DEPARTURE_DATE + "&one-way=true&apikey=" + APIKEY
+#
+# 		low_fare_url = "http://api.sandbox.amadeus.com/v1.2/flights/low-fare-search?origin=BOS&destination=" + dest_city + "&departure_date=" + DEPARTURE_DATE + "&one-way=true&apikey=" + APIKEY
+#
+# 		low_fare = requests.get(url=low_fare_url)
+#
+# 		print(low_fare.text)
+#
+# 		if low_fare.status_code != 200:
+# 			return "Error getting low fare"
+# 		else:
+# 			parsed = json.loads(low_fare.text)
+# 			# fares[DEPARTURE_DATE] = [parsed["results"][0]["price"], parsed["currency"], parsed["results"][0]["airline"]]
+# 			fares[DEPARTURE_DATE] = [parsed["results"][0]["fare"]["total_price"], parsed["currency"], parsed["results"][0]["itineraries"][0]["outbound"]["flights"][0]["marketing_airline"]]
+# 	return fares
+
 def get_low_fare(dest_city):
 	fares = {}
 	for DEPARTURE_DATE in [ONE_WEEK, ONE_MONTH, THREE_MONTHS]:
-		low_fare_url = "http://api.sandbox.amadeus.com/v1.2/flights/extensive-search?origin=BOS&destination=" + dest_city + "&departure_date=" + DEPARTURE_DATE + "&one-way=true&apikey=" + APIKEY
+		# low_fare_url = "http://api.sandbox.amadeus.com/v1.2/flights/extensive-search?origin=BOS&destination=" + dest_city + "&departure_date=" + DEPARTURE_DATE + "&one-way=true&apikey=" + APIKEY
+
+		# low_fare_url = "http://api.sandbox.amadeus.com/v1.2/flights/low-fare-search?origin=IST&destination=BOS&destination=" + dest_city + "&number_of_results=20" + "&departure_date=" + DEPARTURE_DATE + "&one-way=true&apikey=" + APIKEY
+
+		low_fare_url = "http://api.sandbox.amadeus.com/v1.2/flights/low-fare-search?origin=IST&destination=BOS&departure_date=" + DEPARTURE_DATE + "&one-way=true&number_of_results=10&apikey=vu9eP7z9lld0HIjLsfGVT85AjYGJ0xHA"
 		low_fare = requests.get(url=low_fare_url)
+
+		print(low_fare.text)
+
+		# if low_fare.status_code != 200:
+		# 	return "Error getting low fare"
+		# else:
+		# 	parsed = json.loads(low_fare.text)
+		# 	# fares[DEPARTURE_DATE] = [parsed["results"][0]["price"], parsed["currency"], parsed["results"][0]["airline"]]
+		#
+		# 	fares[DEPARTURE_DATE] = [parsed["results"][0]["fare"]["total_price"], parsed["currency"], parsed["results"][0]["itineraries"][0]["outbound"]["flights"][0]["marketing_airline"]]
 
 		if low_fare.status_code != 200:
 			return "Error getting low fare"
 		else:
 			parsed = json.loads(low_fare.text)
-			fares[DEPARTURE_DATE] = [parsed["results"][0]["price"], parsed["currency"], parsed["results"][0]["airline"]]
+			# fares[DEPARTURE_DATE] = [parsed["results"][0]["price"], parsed["currency"], parsed["results"][0]["airline"]]
+			flights = []
+			for i in range(len(parsed["results"])):
+				start_index = parsed["results"][i]["itineraries"][0]["outbound"]["flights"][0]["departs_at"].find("T") + 1
+				flights.append([parsed["results"][i]["fare"]["total_price"], parsed["currency"], parsed["results"][i]["itineraries"][0]["outbound"]["flights"][0]["marketing_airline"],
+				parsed["results"][i]["itineraries"][0]["outbound"]["flights"][0]["departs_at"][start_index:]])
+
+			fares[DEPARTURE_DATE] = flights
+
 	return fares
 
 
@@ -117,6 +161,7 @@ def all_information(user_inp):
 		information["fares"] = {}
 		information["code"] = get_nearest(str(information["latitude"]), str(information["longitude"]))[0]
 		information["airport"] = get_nearest(str(information["latitude"]), str(information["longitude"]))[1]
+		information["popular_places"] = ranked_suggestions()
 		if information["code"] is not None:
 			information["fares"] = get_low_fare(information["code"])
 		return information

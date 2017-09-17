@@ -12,10 +12,12 @@ import SceneKit
 import ARKit
 
 class ViewController: UIViewController, ARSCNViewDelegate {
+	
     @IBOutlet weak var sceneView: ARSCNView!
     
     var debuggingLabel = UILabel()
-    
+	var portals = [Portal]()
+	
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -49,10 +51,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         debuggingLabel.backgroundColor = .black;
         debuggingLabel.textColor = .white;
         view.addSubview(debuggingLabel)
-        
-        //        AzureAPIManager.shared().getPictures(location: "Boston") { (response) in
-        //            print(response)
-        //        }
     }
     
     // this func from Apple ARKit placing objects demo
@@ -83,12 +81,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.session.pause()
     }
     
-    var fullWalls = [SCNNode]()
-    var doorWalls = [SCNNode]()
     var searchQuery = "Honolulu"
-    var floorNode:SCNNode?
     
-    
+
     @objc func didTap(_ sender:UITapGestureRecognizer) {
         
         debuggingLabel.text = "Tap, tapped."
@@ -104,19 +99,27 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             // Get Coordinates of HitTest
             let transform : matrix_float4x4 = closestResult.worldTransform
             //sceneView.session.add(anchor: ARAnchor(transform: transform))
+
             var worldCoord = SCNVector3Make(transform.columns.3.x, transform.columns.3.y, transform.columns.3.z)
             worldCoord.z -= 2
             
+
+			
+			//sceneView.session.currentFrame?.camera.transform.columns.3
+			
+			let newPortal = Portal()
+			
             print("adding wall???")
             
-            fullWalls.forEach{
+            newPortal.fullWalls.forEach{
                 $0.removeFromParentNode()
             }
-            doorWalls.forEach{
+            newPortal.doorWalls.forEach{
                 $0.removeFromParentNode()
             }
-            fullWalls = [SCNNode]()
-            doorWalls = [SCNNode]()
+            newPortal.fullWalls = [SCNNode]()
+            newPortal.doorWalls = [SCNNode]()
+            newPortal.sceneView = self.sceneView
             
             let wallNode = SCNNode()
             wallNode.position = worldCoord
@@ -131,20 +134,20 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             endWallSegmentNode.position = SCNVector3(0, Float(Nodes.WALL_HEIGHT * 0.5), Float(Nodes.WALL_LENGTH) * -1.5)
             
             wallNode.addChildNode(endWallSegmentNode)
-            fullWalls.append(endWallSegmentNode)
+            newPortal.fullWalls.append(endWallSegmentNode)
             
             let sideAWallSegmentNode = Nodes.wallSegmentNode(length: sideLength,
                                                              maskXUpperSide: true)
             sideAWallSegmentNode.eulerAngles = SCNVector3(0, 180.0.degreesToRadians, 0)
             sideAWallSegmentNode.position = SCNVector3(Float(Nodes.WALL_LENGTH) * -1.5, Float(Nodes.WALL_HEIGHT * 0.5), 0)
             wallNode.addChildNode(sideAWallSegmentNode)
-            fullWalls.append(sideAWallSegmentNode)
+            newPortal.fullWalls.append(sideAWallSegmentNode)
             
             let sideBWallSegmentNode = Nodes.wallSegmentNode(length: sideLength,
                                                              maskXUpperSide: true)
             sideBWallSegmentNode.position = SCNVector3(Float(Nodes.WALL_LENGTH) * 1.5, Float(Nodes.WALL_HEIGHT * 0.5), 0)
             wallNode.addChildNode(sideBWallSegmentNode)
-            fullWalls.append(sideBWallSegmentNode)
+            newPortal.fullWalls.append(sideBWallSegmentNode)
             
             let doorSideLength = (sideLength - Nodes.DOOR_WIDTH) * 0.5
             
@@ -155,7 +158,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                                                    Float(Nodes.WALL_HEIGHT) * Float(0.5),
                                                    Float(Nodes.WALL_LENGTH) * 1.5)
             wallNode.addChildNode(leftDoorSideNode)
-            doorWalls.append(leftDoorSideNode)
+            newPortal.doorWalls.append(leftDoorSideNode)
             
             let rightDoorSideNode = Nodes.wallSegmentNode(length: doorSideLength,
                                                           maskXUpperSide: true)
@@ -164,7 +167,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                                                     Float(Nodes.WALL_HEIGHT) * Float(0.5),
                                                     Float(Nodes.WALL_LENGTH) * 1.5)
             wallNode.addChildNode(rightDoorSideNode)
-            doorWalls.append(rightDoorSideNode)
+            newPortal.doorWalls.append(rightDoorSideNode)
             
             let aboveDoorNode = Nodes.wallSegmentNode(length: Nodes.DOOR_WIDTH,
                                                       height: Nodes.WALL_HEIGHT - Nodes.DOOR_HEIGHT)
@@ -197,10 +200,10 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             
             
             
-            floorNode = Nodes.plane(pieces: 3,
+            newPortal.floorNode = Nodes.plane(pieces: 3,
                                     maskYUpperSide: false)
-            floorNode!.position = SCNVector3(0, 0, 0)
-            wallNode.addChildNode(floorNode!)
+            newPortal.floorNode!.position = SCNVector3(0, 0, 0)
+            wallNode.addChildNode(newPortal.floorNode!)
             
             let roofNode = Nodes.plane(pieces: 3,
                                        maskYUpperSide: true)
@@ -211,15 +214,16 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             
             
             // we would like shadows from inside the portal room to shine onto the floor of the camera image(!)
-            let floorGeometry = SCNFloor()
-            floorGeometry.reflectivity = 0
-            floorGeometry.firstMaterial?.diffuse.contents = UIColor.white
-            floorGeometry.firstMaterial?.colorBufferWriteMask = SCNColorMask(rawValue: 0)
-            let floorShadowNode = SCNNode(geometry:floorGeometry)
-            floorShadowNode.position = worldCoord
-            sceneView.scene.rootNode.addChildNode(floorShadowNode)
-            
-            
+
+//            let floor = SCNFloor()
+//            floor.reflectivity = 0
+//            floor.firstMaterial?.diffuse.contents = UIColor.white
+//            floor.firstMaterial?.colorBufferWriteMask = SCNColorMask(rawValue: 0)
+//            let floorShadowNode = SCNNode(geometry:floor)
+//            floorShadowNode.position = worldCoord
+//            sceneView.scene.rootNode.addChildNode(floorShadowNode)
+			
+
             let light = SCNLight()
             // [SceneKit] Error: shadows are only supported by spot lights and directional lights
             light.type  = .spot
@@ -232,24 +236,26 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             light.shadowRadius = 200
             light.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)
             light.shadowMode = .deferred
-            let constraint = SCNLookAtConstraint(target: floorShadowNode)
-            constraint.isGimbalLockEnabled = true
+//            let constraint = SCNLookAtConstraint(target: floorShadowNode)
+//            constraint.isGimbalLockEnabled = true
             let lightNode = SCNNode()
             lightNode.light = light
             lightNode.position = SCNVector3(worldCoord.x,
                                             worldCoord.y + Float(Nodes.DOOR_HEIGHT),
                                             worldCoord.z - Float(Nodes.WALL_LENGTH))
-            lightNode.constraints = [constraint]
+            //lightNode.constraints = [constraint]
             sceneView.scene.rootNode.addChildNode(lightNode)
+
             AzureAPIManager.shared().getPictures(location: searchQuery, completionHandler: { (results) in
                 if  results.count > 0{
                     var images = [(UIImage, String)]()
                     results.forEach{
                         images.append($0!)
                     }
-                    self.addImagesToRoom(images: images)
+
+                    newPortal.addImagesToRoom(images: images)
                 }else{
-                    self.addImagesToRoom(images: [(#imageLiteral(resourceName: "cat0"), "Cat 1"),(#imageLiteral(resourceName: "cat1"), "Cat 2"),(#imageLiteral(resourceName: "cat2"), "Cat 3"),(#imageLiteral(resourceName: "cat3"), "Cat 4"),(#imageLiteral(resourceName: "cat4"), "Cat 5"),(#imageLiteral(resourceName: "cat5"), "Cat 6"),(#imageLiteral(resourceName: "cat6"), "Cat 7"),(#imageLiteral(resourceName: "cat7"), "Cat 8"),(#imageLiteral(resourceName: "cat8"), "Cat 9")])
+                    newPortal.addImagesToRoom(images: [(#imageLiteral(resourceName: "cat0"), "Cat 1"),(#imageLiteral(resourceName: "cat1"), "Cat 2"),(#imageLiteral(resourceName: "cat2"), "Cat 3"),(#imageLiteral(resourceName: "cat3"), "Cat 4"),(#imageLiteral(resourceName: "cat4"), "Cat 5"),(#imageLiteral(resourceName: "cat5"), "Cat 6"),(#imageLiteral(resourceName: "cat6"), "Cat 7"),(#imageLiteral(resourceName: "cat7"), "Cat 8"),(#imageLiteral(resourceName: "cat8"), "Cat 9")])
                 }
             })
             //            addImagesToRoom(images: [(#imageLiteral(resourceName: "cat0"), "Cat 1"),(#imageLiteral(resourceName: "cat1"), "Cat 2"),(#imageLiteral(resourceName: "cat2"), "Cat 3"),(#imageLiteral(resourceName: "cat3"), "Cat 4"),(#imageLiteral(resourceName: "cat4"), "Cat 5"),(#imageLiteral(resourceName: "cat5"), "Cat 6"),(#imageLiteral(resourceName: "cat6"), "Cat 7"),(#imageLiteral(resourceName: "cat7"), "Cat 8"),(#imageLiteral(resourceName: "cat8"), "Cat 9")])
@@ -257,6 +263,74 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
     
     var imageNodes = [SCNNode]()
+    
+
+    /// MARK: - ARSCNViewDelegate
+    
+    // this func from Apple ARKit placing objects demo
+    func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
+        // from apples app
+        DispatchQueue.main.async {
+            // If light estimation is enabled, update the intensity of the model's lights and the environment map
+            if let lightEstimate = self.sceneView.session.currentFrame?.lightEstimate {
+                
+                // Apple divived the ambientIntensity by 40, I find that, atleast with the materials used
+                // here that it's a big too bright, so I increased to to 50..
+                self.enableEnvironmentMapWithIntensity(lightEstimate.ambientIntensity / 50)
+            } else {
+                self.enableEnvironmentMapWithIntensity(25)
+            }
+        }
+    }
+    
+    func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
+        switch camera.trackingState {
+        case .notAvailable:
+            debuggingLabel.text = "Major Problem. Abort!"
+        case .normal:
+            debuggingLabel.text =  "All is good."
+        case .limited(.excessiveMotion):
+            debuggingLabel.text =  "Wow there buddy, slow down a bit."
+        case .limited(.insufficientFeatures):
+            debuggingLabel.text =  "Low detail; tracking will be limited."
+        case .limited(.initializing):
+            debuggingLabel.text =  "Warming Up..."
+        }
+    }
+    
+    
+    // did update plane?
+    func renderer(_ renderer: SCNSceneRenderer, willUpdate node: SCNNode, for anchor: ARAnchor) {
+        
+    }
+    
+    @objc func didThreeFingerTap(_ sender:UITapGestureRecognizer) {
+        print("world reset")
+        debuggingLabel.text = "World Reset"
+        sceneView.session.pause()
+        
+        sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
+            node.removeFromParentNode()}
+        sceneView.session.run(getConfiguration(), options: [.resetTracking, .removeExistingAnchors])
+    }
+}
+
+
+extension ViewController:UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+}
+
+class Portal {
+	var fullWalls = [SCNNode]()
+	var doorWalls = [SCNNode]()
+	var floorNode:SCNNode?
+	var imageNodes = [SCNNode]()
+    var sceneView: ARSCNView?
+	
     func addImagesToRoom(images: [(UIImage,  String)]){
         imageNodes.forEach {
             $0.removeFromParentNode()
@@ -310,7 +384,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 imageNodeGeometry.materials = [frameMaterial, frameMaterial, frameMaterial, imageMaterial, frameMaterial, frameMaterial]
                 imageNode.geometry = imageNodeGeometry
                 var imagePosition = wallNode.position
-                imagePosition.x = Float(-Nodes.WALL_WIDTH) 
+                imagePosition.x = Float(-Nodes.WALL_WIDTH)
                 let offset = (-wallGeometry.length / 3)
                 imagePosition.z = Float(offset) * Float(((i + 2) % 3) - 1)
                 imageNode.position = imagePosition
@@ -393,67 +467,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 lightNode.light = light
                 lightNode.position = SCNVector3(floorNode.position.x, floorNode.position.y, floorNode.position.z)
                 lightNode.constraints = [constraint]
-                sceneView.scene.rootNode.addChildNode(lightNode)
+                sceneView?.scene.rootNode.addChildNode(lightNode)
             }
         }
     }
-    
-    /// MARK: - ARSCNViewDelegate
-    
-    // this func from Apple ARKit placing objects demo
-    func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
-        // from apples app
-        DispatchQueue.main.async {
-            // If light estimation is enabled, update the intensity of the model's lights and the environment map
-            if let lightEstimate = self.sceneView.session.currentFrame?.lightEstimate {
-                
-                // Apple divived the ambientIntensity by 40, I find that, atleast with the materials used
-                // here that it's a big too bright, so I increased to to 50..
-                self.enableEnvironmentMapWithIntensity(lightEstimate.ambientIntensity / 50)
-            } else {
-                self.enableEnvironmentMapWithIntensity(25)
-            }
-        }
-    }
-    
-    func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
-        switch camera.trackingState {
-        case .notAvailable:
-            debuggingLabel.text = "Major Problem. Abort!"
-        case .normal:
-            debuggingLabel.text =  "All is good."
-        case .limited(.excessiveMotion):
-            debuggingLabel.text =  "Wow there buddy, slow down a bit."
-        case .limited(.insufficientFeatures):
-            debuggingLabel.text =  "Low detail; tracking will be limited."
-        case .limited(.initializing):
-            debuggingLabel.text =  "Warming Up..."
-        }
-    }
-    
-    
-    // did update plane?
-    func renderer(_ renderer: SCNSceneRenderer, willUpdate node: SCNNode, for anchor: ARAnchor) {
-        
-    }
-    
-    @objc func didThreeFingerTap(_ sender:UITapGestureRecognizer) {
-        print("world reset")
-        debuggingLabel.text = "World Reset"
-        sceneView.session.pause()
-        sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
-            node.removeFromParentNode()}
-        sceneView.session.run(getConfiguration(), options: [.resetTracking, .removeExistingAnchors])
-    }
 }
-
-
-extension ViewController:UITextFieldDelegate {
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
-    }
-}
-
 

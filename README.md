@@ -21,7 +21,30 @@ Just about the best augmented reality travel app you've ever seen.
 - http://trvlar.azurewebsites.net/trip_info?location=boston
 - returns flight information as dictionary
 
+- http://trvlar.azurewebsites.net/population?location=boston
+- return population for a city
+
+#### Travel information by APIs
+
+Amadeus APIs
+- popular sites/destinations
+- lat / lon
+- airport and airport code
+- flight info: 3x for the next three weeks each with list of 10 [price, currency, airline, time of day]
+
+Microsoft Bing Image Search API
+- images of popular sites (as determined by Amadeus API)
+
+WolframAlpha API
+- population
+
+
 #### Helpful Resources
 - https://docs.microsoft.com/en-us/azure/app-service-web/app-service-web-get-started-python
 - http://docs.python-requests.org/en/master/
 - http://docs.python-requests.org/en/master/user/quickstart/
+
+#### API Keys
+
+Wolfram Alpha
+- HK83UR-UHGPY7A8JA
