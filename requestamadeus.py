@@ -85,14 +85,20 @@ def get_attractions(latitude, longitude):
 def get_low_fare(dest_city):
 	fares = {}
 	for DEPARTURE_DATE in [ONE_WEEK, ONE_MONTH, THREE_MONTHS]:
-		low_fare_url = "http://api.sandbox.amadeus.com/v1.2/flights/extensive-search?origin=BOS&destination=" + dest_city + "&departure_date=" + DEPARTURE_DATE + "&one-way=true&apikey=" + APIKEY
+		# low_fare_url = "http://api.sandbox.amadeus.com/v1.2/flights/extensive-search?origin=BOS&destination=" + dest_city + "&departure_date=" + DEPARTURE_DATE + "&one-way=true&apikey=" + APIKEY
+
+		low_fare_url = "http://api.sandbox.amadeus.com/v1.2/flights/low-fare-search?origin=BOS&destination=" + dest_city + "&departure_date=" + DEPARTURE_DATE + "&one-way=true&apikey=" + APIKEY
+
 		low_fare = requests.get(url=low_fare_url)
+
+		print(low_fare.text)
 
 		if low_fare.status_code != 200:
 			return "Error getting low fare"
 		else:
 			parsed = json.loads(low_fare.text)
-			fares[DEPARTURE_DATE] = [parsed["results"][0]["price"], parsed["currency"], parsed["results"][0]["airline"]]
+			# fares[DEPARTURE_DATE] = [parsed["results"][0]["price"], parsed["currency"], parsed["results"][0]["airline"]]
+			fares[DEPARTURE_DATE] = [parsed["results"][0]["fare"]["total_price"], parsed["currency"], parsed["results"][0]["itineraries"][0]["outbound"]["flights"][0]["marketing_airline"]]
 	return fares
 
 

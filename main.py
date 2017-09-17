@@ -18,8 +18,10 @@ def default_route():
 @app.route('/trip_info', methods=['GET'])
 def get_trip():
     location = request.args.get('location', '')
-    info = remove_non_ascii(str(all_information(location)))
-    print(info)
+    all_info = all_information(location)
+    all_info["population"] = population(location)
+    info = remove_non_ascii(str(all_info))
+    # print(info)
     return info
 
 # wolfram alpha section
@@ -27,12 +29,15 @@ def get_trip():
 @app.route('/population', methods=['GET'])
 def get_population():
 
+    location = request.args.get('location', '')
+    return population(location)
+
+def population(location):
     # general api usage
     # http://api.wolframalpha.com/v2/query?input=pi&appid=XXXX
 
     url_val = "http://api.wolframalpha.com/v2/query"
 
-    location = request.args.get('location', '')
     query = "What is the population of " + location
     API_KEY_Wolfram = "HK83UR-UHGPY7A8JA"
 
@@ -49,12 +54,11 @@ def get_population():
 
     my_result = data.text[index:end_index] + " people"
 
-    print(data.text[index:end_index] + " people")
-    print(remove_non_ascii(data.text))
+    # print(data.text[index:end_index] + " people")
+    # print(remove_non_ascii(data.text))
 
     # return jsonify(data.text)
     return my_result
-
 
 # works with ?key=value pair key=location and value = name of location
 @app.route('/get_pictures', methods=['GET'])
