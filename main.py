@@ -76,11 +76,26 @@ def get_pictures():
     # use string, number_of_images for these items to add keywords to image search
     # and number of images to return
     search_items = []
-    search_items.append(("", 1))
 
-    # grab one image from each attraction
-    for attraction in attractions:
-        search_items.append((" " + attraction, 1))
+
+    if isinstance(attractions, str):
+        search_items.append((" weather", 1))
+        search_items.append((" people", 1))
+        search_items.append((" attractions", 1))
+        search_items.append((" sports", 1))
+        search_items.append((" geography", 1))
+        search_items.append((" map", 1))
+        search_items.append((" resort", 1))
+        search_items.append((" culture", 1))
+        search_items.append((" sites", 1))
+    else:
+
+
+        search_items.append(("", 1))
+
+        # grab one image from each attraction
+        for attraction in attractions:
+            search_items.append((" " + attraction, 1))
 
     master_list = []
 
