@@ -27,8 +27,10 @@ class AzureAPIManager: NSObject {
         return sharedInstance
     }
     
+    
     func getPictures(location:String, completionHandler: @escaping ([(UIImage, String)?])-> ()){
         print("Get pictures called")
+        print(azureURL.appendingPathComponent("get_pictures?location=\(location)"))
         Alamofire.request(azureURL.appendingPathComponent("get_pictures?location=\(location)")).responseJSON { (response) in
             if let json = response.data {
                 self.debugLabel?.text = "\(location) pictures found"
@@ -84,6 +86,34 @@ class AzureAPIManager: NSObject {
         }
     }
     
+    func updateFlightInformation(location: String,completionHandler: @escaping ()-> () ){
+        //        http://trvlar.azurewebsites.net/trip_info?location=boston
+        print("Get flight information called")
+        print(azureURL.appendingPathComponent("trip_info?location=\(location.lowercased())"))
+        
+        Alamofire.request(azureURL.appendingPathComponent("trip_info?location=\(location.lowercased())")).responseJSON { (response) in
+            if let json = response.data {
+                let data = JSON(data: json)
+                print("Data response received")
+                print(data)
+                if let airport = data["airport"].string{
+                    self.airportName = airport
+                }
+                if let fares = data["fares"].array{
+                    self.flightData = [[String]]()
+                    for item in fares{
+                        if let stringArray = item.array?.filter({ $0.string != nil }).map({ $0.string! }){
+                            self.flightData.append(stringArray)
+                        }
+                    }
+                }
+                completionHandler()
+                
+            }
+        }
+    }
+    
+    
     func retrievePicture(search: (URL, String, Int),  completionHandler: @escaping ((UIImage, String, Int)?)-> ()){
         let imageURL = search.0
         getDataFromUrl(url: imageURL) { (data, response, error)  in
@@ -98,7 +128,8 @@ class AzureAPIManager: NSObject {
         }
     }
     
-    
+    var flightData:[[String]] = []
+    var airportName: String = ""
     func getDataFromUrl(url: URL, completion: @escaping (_ data: Data?, _  response: URLResponse?, _ error: Error?) -> Void) {
         URLSession.shared.dataTask(with: url) {
             (data, response, error) in

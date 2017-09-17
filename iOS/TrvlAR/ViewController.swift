@@ -81,7 +81,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         debuggingLabel.textColor = .white
         view.addSubview(debuggingLabel)
         AzureAPIManager.shared().debugLabel = debuggingLabel
-
     }
     
     // this func from Apple ARKit placing objects demo
@@ -93,6 +92,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         }
         sceneView.scene.lightingEnvironment.intensity = intensity
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillAppear), name: Notification.Name.UIKeyboardWillShow, object: nil)
+        
     }
     
     @objc func keyboardWillAppear() {

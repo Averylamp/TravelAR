@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		ADF8679AB4CB379ADDD58D3B /* Pods_TrvlARTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC67531F82C75EF1F021E793 /* Pods_TrvlARTests.framework */; };
 		BB517D551F6E713000BB0ED5 /* DataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB517D541F6E713000BB0ED5 /* DataViewController.swift */; };
+		BB517D571F6E8C1900BB0ED5 /* FlightTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB517D561F6E8C1900BB0ED5 /* FlightTableViewCell.swift */; };
 		BBFE1D0F1F6DC74E00DFD67B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBFE1D0E1F6DC74E00DFD67B /* AppDelegate.swift */; };
 		BBFE1D111F6DC74E00DFD67B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBFE1D101F6DC74E00DFD67B /* ViewController.swift */; };
 		BBFE1D141F6DC74E00DFD67B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BBFE1D121F6DC74E00DFD67B /* Main.storyboard */; };
@@ -47,6 +48,7 @@
 		370783E2FFB955458CE446DE /* Pods_TrvlAR.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TrvlAR.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A76CBE0333631247345F5C0 /* Pods-TrvlARTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrvlARTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-TrvlARTests/Pods-TrvlARTests.release.xcconfig"; sourceTree = "<group>"; };
 		BB517D541F6E713000BB0ED5 /* DataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataViewController.swift; sourceTree = "<group>"; };
+		BB517D561F6E8C1900BB0ED5 /* FlightTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightTableViewCell.swift; sourceTree = "<group>"; };
 		BBFE1D0B1F6DC74E00DFD67B /* TrvlAR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TrvlAR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BBFE1D0E1F6DC74E00DFD67B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BBFE1D101F6DC74E00DFD67B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 				BBFE1D401F6E10E500DFD67B /* AzureAPIManager.swift */,
 				BBFE1D121F6DC74E00DFD67B /* Main.storyboard */,
 				BB517D541F6E713000BB0ED5 /* DataViewController.swift */,
+				BB517D561F6E8C1900BB0ED5 /* FlightTableViewCell.swift */,
 				BBFE1D151F6DC74E00DFD67B /* Assets.xcassets */,
 				BBFE1D171F6DC74E00DFD67B /* LaunchScreen.storyboard */,
 				BBFE1D1A1F6DC74E00DFD67B /* Info.plist */,
@@ -472,6 +475,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BB517D571F6E8C1900BB0ED5 /* FlightTableViewCell.swift in Sources */,
 				BBFE1D411F6E10E500DFD67B /* AzureAPIManager.swift in Sources */,
 				BBFE1D111F6DC74E00DFD67B /* ViewController.swift in Sources */,
 				BBFE1D3E1F6DC7F000DFD67B /* Extensions.swift in Sources */,
@@ -648,7 +652,7 @@
 				DEVELOPMENT_TEAM = R4DQ2L3FBV;
 				INFOPLIST_FILE = TrvlAR/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.Isometric.TrvlAR;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Isometric.TravelAR;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -664,7 +668,7 @@
 				DEVELOPMENT_TEAM = R4DQ2L3FBV;
 				INFOPLIST_FILE = TrvlAR/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.Isometric.TrvlAR;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Isometric.TravelAR;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
