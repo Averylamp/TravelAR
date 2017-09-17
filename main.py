@@ -10,7 +10,8 @@ from requestamadeus import *
 
 app = Flask(__name__)
 
-MICROSOFT_KEY = 'c4e8df438e7042f8856acc8f41f0fa21'
+# MICROSOFT_KEY = 'c4e8df438e7042f8856acc8f41f0fa21'
+MICROSOFT_KEY = "9dfb89690c93423a9f92ef7116d3f9ae"
 
 @app.route('/')
 def default_route():
@@ -60,7 +61,7 @@ def population(location):
     # print(remove_non_ascii(data.text))
 
     # return jsonify(data.text)
-    print(my_result)
+    # print(my_result)
     return my_result
 
 # works with ?key=value pair key=location and value = name of location
@@ -119,8 +120,6 @@ def bing_search(location_name, count):
         # key 1 of regular api - ethan (used to work)
         # 'Ocp-Apim-Subscription-Key': 'fedcea6c97d841ac9105b8e9e1abc139',
 
-
-
         # key 1 of new api version - ethan
         # 'Ocp-Apim-Subscription-Key': 'fedcea6c97d841ac9105b8e9e1abc139',
 
@@ -163,7 +162,12 @@ def bing_search(location_name, count):
     except Exception as e:
         print("Error with requesting data.")
         # return an empty list if there is an error
-        return []
+        # return []
+        # default value in case something goes wrong but we still want to display content
+        with open('saved_responses.json') as data_file:
+            my_data = json.load(data_file)
+            print(my_data[1])
+            return my_data[1]
 
 
 if __name__=='__main__':

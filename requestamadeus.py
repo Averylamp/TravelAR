@@ -4,8 +4,15 @@ from unidecode import unidecode
 
 # APIKEY = "5caQqqQxp1RtA6TAQZGllELZ0Zr7RmBF"
 # APIKEY = "vu9eP7z9lld0HIjLsfGVT85AjYGJ0xHA"
-APIKEY = "ljUiaAOlDAkwAtTVgp1X2qtG1tdPLGAL"
 # APIKEY = "vu9eP7z9lld0HIjLsfGVT85AjYGJ0xHA"
+
+
+# APIKEY = "ljUiaAOlDAkwAtTVgp1X2qtG1tdPLGAL"
+
+# APIKEY = "U4WqKpXPgPyXJf3CbfoMCxEoQZ1c1Mvy"
+
+APIKEY = "Oz0jI6RScEF57oWGakeH3mJJAtxHAYOV"
+
 ORIGIN = "BOS"
 ONE_WEEK = "2017-09-24"
 ONE_MONTH = "2017-10-17"
@@ -74,7 +81,11 @@ def get_attractions(latitude, longitude):
 	attract = requests.get(url=attract_url)
 
 	if attract.status_code != 200:
-		return "Error getting attractions"
+		# return "Error getting attractions"
+		with open('saved_responses.json') as data_file:
+			my_data = json.load(data_file)
+			print(my_data[0][0]["attractions"])
+			return my_data[0][0]["attractions"]
 	else:
 		parsed = json.loads(attract.text)
 		points_of_interest = []
@@ -110,10 +121,10 @@ def get_low_fare(dest_city):
 
 		# low_fare_url = "http://api.sandbox.amadeus.com/v1.2/flights/low-fare-search?origin=IST&destination=BOS&destination=" + dest_city + "&number_of_results=20" + "&departure_date=" + DEPARTURE_DATE + "&one-way=true&apikey=" + APIKEY
 
-		low_fare_url = "http://api.sandbox.amadeus.com/v1.2/flights/low-fare-search?origin=BOS&destination=" + dest_city + "&departure_date=" + DEPARTURE_DATE + "&one-way=true&number_of_results=10&apikey=vu9eP7z9lld0HIjLsfGVT85AjYGJ0xHA"
+		low_fare_url = "http://api.sandbox.amadeus.com/v1.2/flights/low-fare-search?origin=BOS&destination=" + dest_city + "&departure_date=" + DEPARTURE_DATE + "&one-way=true&number_of_results=10&apikey=" + APIKEY
 		low_fare = requests.get(url=low_fare_url)
 
-		print(low_fare.text)
+		# print(low_fare.text)
 
 		# if low_fare.status_code != 200:
 		# 	return "Error getting low fare"
