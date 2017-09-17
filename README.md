@@ -30,7 +30,7 @@ Amadeus APIs
 - popular sites/destinations
 - lat / lon
 - airport and airport code
-- flight info: 3x for the next three weeks with [price, currency, airline]
+- flight info: 3x for the next three weeks each with list of 10 [price, currency, airline, time of day]
 
 Microsoft Bing Image Search API
 - images of popular sites (as determined by Amadeus API)
