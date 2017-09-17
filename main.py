@@ -28,11 +28,11 @@ def get_pictures():
     # use string, number_of_images for these items to add keywords to image search
     # and number of images to return
     search_items = []
-    search_items.append(("", 2))
-    search_items.append((" attractions", 2))
-    search_items.append((" weather", 2))
-    search_items.append((" people", 2))
-    search_items.append((" activities", 2))
+    search_items.append(("", 1))
+    search_items.append((" attraction", 1))
+    search_items.append((" weather", 1))
+    search_items.append((" people", 1))
+    search_items.append((" activity", 1))
 
     master_list = []
 
@@ -48,15 +48,6 @@ def bing_search(location_name, count):
         'Ocp-Apim-Subscription-Key': 'fedcea6c97d841ac9105b8e9e1abc139',
     }
 
-    # params = urllib.parse.urlencode({
-    #     # Request parameters
-    #     'q': location_name,
-    #     'count': count,
-    #     'offset': '0',
-    #     'mkt': 'en-us',
-    #     'safeSearch': 'Moderate',
-    # })
-
     params = {
         # Request parameters
         'q': location_name,
@@ -66,29 +57,9 @@ def bing_search(location_name, count):
         'safeSearch': 'Moderate',
     }
 
-    print("About to start")
-
-    # data = requests.get(
-    # url="https://api.cognitive.microsoft.com/bing/v5.0/images/search", params=params, headers=headers)
-    # ,
-    # headers=headers)#, params=params)
-
-    # conn = http.client.HTTPSConnection('api.cognitive.microsoft.com')
-    # conn.request("GET", "/bing/v5.0/images/search?%s" % params, "{body}", headers)
-
-
-    # print(data.text)
-
     try:
-        # conn = http.client.HTTPSConnection('api.cognitive.microsoft.com')
-        # conn.request("GET", "/bing/v5.0/images/search?%s" % params, "{body}", headers)
-        # response = conn.getresponse()
-        # data = response.read()
-        # print(data)
 
-        data = requests.get(
-        url="https://api.cognitive.microsoft.com/bing/v5.0/images/search", params=params, headers=headers)
-
+        data = requests.get(url="https://api.cognitive.microsoft.com/bing/v5.0/images/search", params=params, headers=headers)
 
         json_array = json.loads(data.text) #this line won't work
 
@@ -99,12 +70,13 @@ def bing_search(location_name, count):
             temp_dict['name'] = i['name']
             temp_dict['url'] = i['contentUrl']
             web_url_list.append(temp_dict)
+
         # print(web_url_list)
         return web_url_list
 
         conn.close()
     except Exception as e:
-        print("[Errno {0}] {1}".format(e.errno, e.strerror))
+        print("Error with requesting data.")
         # return an empty list if there is an error
         return []
 
