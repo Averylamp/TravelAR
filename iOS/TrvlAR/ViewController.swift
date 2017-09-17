@@ -85,7 +85,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
 
     @objc func didTap(_ sender:UITapGestureRecognizer) {
-        
+		guard sender.numberOfTouches == 1 else { return }
         debuggingLabel.text = "Tap, tapped."
         let location = sender.location(in: sceneView)
         
@@ -105,7 +105,12 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             
 
 			
-			//sceneView.session.currentFrame?.camera.transform.columns.3
+			let unwrappedCoord = sceneView.session.currentFrame?.camera.transform.columns.3
+			guard let camCoord = unwrappedCoord else { return }
+			
+			//let worldCoord = SCNVector3Make(camCoord.x, camCoord.y, camCoord.z+1)
+			
+            //let worldCoord = SCNVector3Make(transform.columns.3.x, transform.columns.3.y, transform.columns.3.z)
 			
 			let newPortal = Portal()
 			
@@ -303,17 +308,17 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     
     // did update plane?
-    func renderer(_ renderer: SCNSceneRenderer, willUpdate node: SCNNode, for anchor: ARAnchor) {
-        
-    }
-    
+//    func renderer(_ renderer: SCNSceneRenderer, willUpdate node: SCNNode, for anchor: ARAnchor) {
+//
+//    }
+	
     @objc func didThreeFingerTap(_ sender:UITapGestureRecognizer) {
         print("world reset")
         debuggingLabel.text = "World Reset"
-        sceneView.session.pause()
+        //sceneView.session.pause()
         
-        sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
-            node.removeFromParentNode()}
+//        sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
+//            node.removeFromParentNode()}
         sceneView.session.run(getConfiguration(), options: [.resetTracking, .removeExistingAnchors])
     }
 }
