@@ -14,7 +14,6 @@ import ARKit
 class ViewController: UIViewController, ARSCNViewDelegate {
     @IBOutlet weak var sceneView: ARSCNView!
 
-    
     var planeCount = 0
     var currentPlane:SCNNode?
 	var debuggingLabel = UILabel()
@@ -63,11 +62,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        let configuration = ARWorldTrackingConfiguration()
-        configuration.planeDetection = .horizontal
-        configuration.isLightEstimationEnabled = true
-        
         sceneView.session.run(getConfiguration())
     }
     
@@ -117,8 +111,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         doorWalls = [SCNNode]()
 
         let wallNode = SCNNode()
-		let positionAddition = SCNVector3.init(newPlaneData.1.x+1.5, newPlaneData.1.y, newPlaneData.1.z)
+		let positionAddition = SCNVector3(newPlaneData.1.x, newPlaneData.1.y, newPlaneData.1.z-2.0)
 		wallNode.position = positionAddition
+		//wallNode.rotation = SCNVector4(x: 1, y: 0, z: 0, w: Float(M_PI/2.0))
         
         let sideLength = Nodes.WALL_LENGTH * 3
         let halfSideLength = sideLength * 0.5
@@ -280,15 +275,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             }
             if i > 8 && i < 9 + doorWalls.count, let wallGeometry = doorWalls[i - 9].geometry as? SCNBox{
                 let wallNode = fullWalls[i - 9]
-                
-                
             }
-            
-            
         }
-        
-        
-        
     }
     
     /// MARK: - ARSCNViewDelegate
