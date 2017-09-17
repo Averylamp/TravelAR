@@ -67,7 +67,8 @@ def bing_search(location_name, count):
         web_url_list = []
         for i in content_list:
             temp_dict = {}
-            temp_dict['name'] = i['name']
+            # temp_dict['name'] = i['name']
+            temp_dict['name'] = location_name
             temp_dict['url'] = i['contentUrl']
             web_url_list.append(temp_dict)
 
