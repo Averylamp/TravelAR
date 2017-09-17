@@ -7,7 +7,8 @@
       "timezone": "Pacific/Honolulu",
       "code": "HNL",
       "airport": "Honolulu International Airport",
-      "attractions": ["Hickam Field", "Diamond Head, Hawaii", "USS Arizona Memorial", "Waikiki", "Iolani Palace", "USS Missouri (BB-63)", "The Real World: Hawaii", "Honolulu", "Haiku Stairs", "Military grid reference system"],
+      "previous_attractions": ["Hickam Field", "Diamond Head, Hawaii", "USS Arizona Memorial", "Waikiki", "Iolani Palace", "USS Missouri (BB-63)", "The Real World: Hawaii", "Honolulu", "Haiku Stairs", "Military grid reference system"],
+      "attractions": ["weather", "people", "attractions", "sports", "geography", "map", "resort", "culture", "sites"],
       "fares": {
         "2017-09-24": [["288.80", "USD", "AA", "12:35"], ["288.80", "USD", "DL", "07:15"], ["396.84", "USD", "UA", "07:41"], ["396.84", "USD", "HA", "06:30"], ["401.81", "USD", "AS", "16:38"], ["461.34", "USD", "DL", "06:38"], ["465.84", "USD", "B6", "06:30"], ["571.40", "USD", "VX", "07:25"]],
         "2017-10-17": [["288.80", "USD", "AA", "06:20"], ["343.83", "USD", "UA", "06:25"], ["343.83", "USD", "DL", "07:15"], ["382.43", "USD", "AS", "19:02"], ["461.34", "USD", "DL", "06:25"], ["467.80", "USD", "VX", "07:25"], ["490.79", "USD", "B6", "21:49"], ["491.58", "USD", "B6", "20:13"], ["521.85", "USD", "HA", "20:13"], ["540.58", "USD", "B6", "20:13"]],
