@@ -10,6 +10,8 @@ from requestamadeus import *
 
 app = Flask(__name__)
 
+MICROSOFT_KEY = 'c4e8df438e7042f8856acc8f41f0fa21'
+
 @app.route('/')
 def default_route():
     # value = json.loads(jsonify(["testing json"]))
@@ -110,6 +112,8 @@ def get_pictures():
 # bing image search
 def bing_search(location_name, count):
 
+    global MICROSOFT_KEY
+
     headers = {
         # Request headers
         # key 1 of regular api - ethan (used to work)
@@ -121,7 +125,9 @@ def bing_search(location_name, count):
         # 'Ocp-Apim-Subscription-Key': 'fedcea6c97d841ac9105b8e9e1abc139',
 
         # key 1 of arlene's api
-        'Ocp-Apim-Subscription-Key': 'c4e8df438e7042f8856acc8f41f0fa21',
+        # 'c4e8df438e7042f8856acc8f41f0fa21'
+
+        'Ocp-Apim-Subscription-Key': MICROSOFT_KEY,
     }
 
     params = {

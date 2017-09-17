@@ -3,7 +3,8 @@ import json
 from unidecode import unidecode
 
 # APIKEY = "5caQqqQxp1RtA6TAQZGllELZ0Zr7RmBF"
-APIKEY = "vu9eP7z9lld0HIjLsfGVT85AjYGJ0xHA"
+# APIKEY = "vu9eP7z9lld0HIjLsfGVT85AjYGJ0xHA"
+APIKEY = "ljUiaAOlDAkwAtTVgp1X2qtG1tdPLGAL"
 ORIGIN = "BOS"
 ONE_WEEK = "2017-09-24"
 ONE_MONTH = "2017-10-17"
