@@ -9,9 +9,10 @@
 import UIKit
 
 class DataViewController: UIViewController {
-
+    
     @IBOutlet weak var searchTextField: UITextField!
     
+    @IBOutlet weak var populationLabel: UILabel!
     @IBOutlet weak var toggleButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
     
@@ -21,16 +22,16 @@ class DataViewController: UIViewController {
         
         let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.dark)
         let blurEffectView = UIVisualEffectView(effect: blurEffect)
-//        blurEffectView.alpha = 0.8
+        //        blurEffectView.alpha = 0.8
         blurEffectView.layer.cornerRadius = 50
         blurEffectView.clipsToBounds = true
         blurEffectView.frame = self.view.bounds
-//        blurEffectView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
+        //        blurEffectView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
         
         tableView.backgroundColor = nil
         tableView.delegate = self
         tableView.dataSource = self
-//        tableView.separatorStyle = .none
+        //        tableView.separatorStyle = .none
         
         reloadData()
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -58,24 +59,31 @@ class DataViewController: UIViewController {
             print("Done refreshing flight data")
             self.tableView.reloadData()
             self.tableView.reloadSections(IndexSet(integer: 0), with: .automatic)
+            if AzureAPIManager.shared().population != ""{
+                
+                self.populationLabel.text = "Population: \(AzureAPIManager.shared().population)"
+            }else{
+                self.populationLabel.text = "Population: "
+            }
         }
     }
     
     @IBAction func collapseClicked(_ sender: Any) {
+        reloadData()
         NotificationCenter.default.post(name: toggleDataShowHideNotification, object: nil)
     }
     
     @IBAction func presetButtonClicked(_ sender: UIButton) {
         self.searchTextField.text = sender.titleLabel?.text?.uppercased()
         NotificationCenter.default.post(name: toggleDataShowHideNotification, object: nil)
+        reloadData()
     }
     
     @IBAction func searchClicked(_ sender: Any) {
-        
-        
+        reloadData()
     }
     
-
+    
 }
 
 extension DataViewController: UITextFieldDelegate{
@@ -114,7 +122,8 @@ extension DataViewController: UITableViewDelegate, UITableViewDataSource{
             }
             
             cell.fullAirportLabel.text = AzureAPIManager.shared().airportName
-            cell.dateLabel.text = "\(data[4]), \(data[0])"
+            cell.airportShortLabel.text = AzureAPIManager.shared().airportAbrev
+            cell.dateLabel.text = "\(data[3]): \(data[4]), \(data[0])"
             cell.backgroundColor = nil
             
             
@@ -124,5 +133,22 @@ extension DataViewController: UITableViewDelegate, UITableViewDataSource{
             return tableView.dequeueReusableCell(withIdentifier: "null")!
         }
     }
+    
+    //    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    //        if section == 0{
+    //            if AzureAPIManager.shared().population != ""{
+    //                let popLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.tableView.frame.width, height: 30))
+    //                popLabel.textAlignment = .center
+    //                popLabel.font = UIFont(name: "Avenir-Roman", size: 20)
+    //                popLabel.text = AzureAPIManager.shared().population
+    //                popLabel.backgroundColor = nil
+    //                popLabel.textColor = UIColor.white
+    //                return popLabel
+    //            }else{
+    //                return nil
+    //            }
+    //        }
+    //        return nil
+    //    }
     
 }

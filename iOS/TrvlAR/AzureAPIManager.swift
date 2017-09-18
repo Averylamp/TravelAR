@@ -88,6 +88,11 @@ class AzureAPIManager: NSObject {
     
     func updateFlightInformation(location: String,completionHandler: @escaping ()-> () ){
         //        http://trvlar.azurewebsites.net/trip_info?location=boston
+        if location == lastSearch{
+            return
+        }else{
+            lastSearch = location
+        }
         print("Get flight information called")
         print(azureURL.appendingPathComponent("trip_info?location=\(location.lowercased())"))
         
@@ -98,6 +103,12 @@ class AzureAPIManager: NSObject {
                 print(data)
                 if let airport = data["airport"].string{
                     self.airportName = airport
+                }
+                if let population = data["population"].string{
+                    self.population = population
+                }
+                if let airportAbv = data["code"].string{
+                    self.airportAbrev = airportAbv
                 }
                 if let fares = data["fares"].array{
                     self.flightData = [[String]]()
@@ -130,6 +141,10 @@ class AzureAPIManager: NSObject {
     
     var flightData:[[String]] = []
     var airportName: String = ""
+    var lastSearch: String = ""
+    var airportAbrev: String = ""
+    var airportFrom: String = "BOS"
+    var population: String = ""
     func getDataFromUrl(url: URL, completion: @escaping (_ data: Data?, _  response: URLResponse?, _ error: Error?) -> Void) {
         URLSession.shared.dataTask(with: url) {
             (data, response, error) in
