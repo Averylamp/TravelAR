@@ -1,28 +1,30 @@
-# Trvlr
+# TravelAR
 Just about the best augmented reality travel app you've ever seen.
 
-## Prizes to go for
-- amadeus - using api for travel, most innovated mobile
-- concur - best and most innovative idea for a travel hack
-- microsoft - best microsoft hack (more backend focused)
+[_See Our Devpost_](https://devpost.com/software/travelar-g4sq6y)
 
-### OTHER OPTIONS
-- Facebook API (your friend's been here)
-- best use of location data (samsara)... maybe?
-- wolfram alpha (background information on the location)
-- 3 prizes for data viz
+[_See the full video here_](https://www.youtube.com/watch?v=ACneUIVByaY&index=2&list=PLyC3kmCiJ2x31ZLjuB7RogEvyamrkSOo9)
 
-### Using Azure (Flask) Endpoints
+![alt tag](https://raw.githubusercontent.com/Averylamp/TravelAR/master/Images/screen1.jpg)
 
-##### Example Usage
-- http://trvlar.azurewebsites.net/get_pictures?location=denver
-- returns json object of names and images
 
-- http://trvlar.azurewebsites.net/trip_info?location=boston
-- returns flight information as dictionary
+Traveling is exciting - planning, not so much. We thought about different ways to improve the vacation search process and found that visuals were key in selecting the perfect location. Because of this, we created TravelAR, an augmented reality app that allows you to physically step into scenes of different cities, then find flight information if you have found your ideal travel destination.
 
-- http://trvlar.azurewebsites.net/population?location=boston
-- return population for a city
+![alt tag](https://raw.githubusercontent.com/Averylamp/TravelAR/master/Images/screen2.jpg)
+
+## What it does
+TravelAR is an iOS travel application built using Apple's ARKit. On opening the app, there is a camera view in the room. Upon tapping, there will be an augmented reality "portal" to another city, where you physically walk inside another "room" and view a gallery of AR scenes from the city. If interested in travel information to the city, there is a pull-up information section where a user can find relevant flight details and prices.
+
+![alt tag](https://raw.githubusercontent.com/Averylamp/TravelAR/master/Images/screen3.jpg)
+
+## How we built it
+We built TravelAR with Apple's iOS ARKit, a Flask server hosted with Microsoft Azure, and many APIs including the Amadeus Travel APIs, the Microsoft Bing Image Search API, and the WolframAlpha Simple API. The iOS application submits a “GET” request to our Flask server hosted in the cloud with Microsoft Azure. This Flask server takes in a city/location name, and it processes that string with many APIs to extract information—starting with the Amadeus Travel APIs. We hit the Amadeus endpoints with our location to gather information on popular attractions nearby, flight statistics, and other general travel information. We then port the “popular attractions” into the Microsoft Bing Image Search API to get a list of image urls that will be displayed in the iOS application. Furthermore, we use the WolframAlpha API to get information on the population. We combine all of the information with the AR to create a comprehensive visual display with helpful information.
+
+![alt tag](https://raw.githubusercontent.com/Averylamp/TravelAR/master/Images/screen4.jpg)
+
+## What's next for TravelAR
+The future vision for TravelAR is creating 3d scenes that are almost indistinguishable from reality. Imagine stepping into the "Paris" portal and being able to view in 3d detail all things around you, the interactions of the community, and experience all of the tourist attractions - right from your home.  We would also want to expand this experience by making it social. It would be great to see which of your friends have traveled to a particular location in the past and also to take inspiration from other people's travel experiences.
+
 
 #### Travel information by APIs
 
@@ -37,14 +39,3 @@ Microsoft Bing Image Search API
 
 WolframAlpha API
 - population
-
-
-#### Helpful Resources
-- https://docs.microsoft.com/en-us/azure/app-service-web/app-service-web-get-started-python
-- http://docs.python-requests.org/en/master/
-- http://docs.python-requests.org/en/master/user/quickstart/
-
-#### API Keys
-
-Wolfram Alpha
-- HK83UR-UHGPY7A8JA
