@@ -10,8 +10,7 @@ from requestamadeus import *
 
 app = Flask(__name__)
 
-# MICROSOFT_KEY = 'c4e8df438e7042f8856acc8f41f0fa21'
-MICROSOFT_KEY = "9dfb89690c93423a9f92ef7116d3f9ae"
+MICROSOFT_KEY = ""
 
 @app.route('/')
 def default_route():
