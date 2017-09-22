@@ -1,5 +1,4 @@
 # TravelAR
-Just about the best augmented reality travel app you've ever seen.
 
 [_See Our Devpost_](https://devpost.com/software/travelar-g4sq6y)
 
