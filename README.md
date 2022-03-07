@@ -25,7 +25,7 @@
 <a href="https://www.youtube.com/watch?v=ACneUIVByaY&index=2&list=PLyC3kmCiJ2x31ZLjuB7RogEvyamrkSOo9">
   <h2> 
     <a href="https://www.youtube.com/watch?v=ACneUIVByaY&index=2&list=PLyC3kmCiJ2x31ZLjuB7RogEvyamrkSOo9">
-      View the full video 
+      View the full video walkthrough of the app
     </a>
   </h2>
 <img alt="Youtube Video Preview" src="https://user-images.githubusercontent.com/7774592/156963568-7ecccc0a-cf25-48f5-a55b-f7539626fa11.gif">
