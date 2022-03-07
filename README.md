@@ -27,7 +27,7 @@
       View the full video walkthrough of the app
     </a>
   </h2>
-<img alt="Youtube Video Preview" src="https://user-images.githubusercontent.com/7774592/156963568-7ecccc0a-cf25-48f5-a55b-f7539626fa11.gif">
+<img alt="Youtube Video Preview" src="https://user-images.githubusercontent.com/7774592/156963568-7ecccc0a-cf25-48f5-a55b-f7539626fa11.gif" width=600>
 </a>
 
 ![alt tag](https://raw.githubusercontent.com/Averylamp/TravelAR/master/Images/screen1.jpg)
