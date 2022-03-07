@@ -19,8 +19,7 @@
   We won two awards at HackMIT 2017, the "Amadeus - Best Use of Amadeus APIs" award and the "Sponsor Prize - Concur - Best Travel Hack"
 </p>
   
-
-[_See Our Devpost_](https://devpost.com/software/travelar-g4sq6y)
+<h2> <a href="https://devpost.com/software/travelar-g4sq6y"> See our Devpost </a> </h2>
 
 <a href="https://www.youtube.com/watch?v=ACneUIVByaY&index=2&list=PLyC3kmCiJ2x31ZLjuB7RogEvyamrkSOo9">
   <h2> 
