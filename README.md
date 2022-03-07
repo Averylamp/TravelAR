@@ -1,13 +1,33 @@
 # TravelAR
 
+<p>
+  Travel AR was made with some of my best friends from college ( 
+  <a href="https://ethanweber.me/">Ethan Weber</a>,
+  <a href="https://kennethfriedman.org/">Kenneth Friedman</a>,
+  <a href="https://arlenesiswanto.me/">Arlene Siswanto</a>)
+  and submitted to HackMIT 2017.  It was some early staging prototyping of what an AR travel experience could be like.
+</p>
+<p>
+  The basic idea behind the app was very simple.  You'd be able to pick any sort of place that you'd want to go to in the near future and it would use the Amadeus API to pull up all of the flights/cost information to get to that location as well as generate an AR room of that places biggest attactions.  In Augmented Reality you would be able to walk into the room and see the top places on the wall as if it were an art gallery.  To get the landmark attractions, the Amadeus API was used, then the Bing image search API was used to pull gallery images of the landmarks you'd be able to see.  With each location, we'd also do an informational search and aggregate the infromation about the location (population) to display to users.  
+</p>
+
+<p>
+  Although it would have been nice to really bring in unique 3D experiences from each of the locations, as such information isn't freely available online we thought that taking 2D experiences and putting them in a room together (with no distractions) would be the closes quickly prototypable experinece we would be able to pull off in 24 hours.  
+</p>
+
+<p>
+  We won two awards at HackMIT 2017, the "Amadeus - Best Use of Amadeus APIs" award and the "Sponsor Prize - Concur - Best Travel Hack"
+</p>
+  
+
 [_See Our Devpost_](https://devpost.com/software/travelar-g4sq6y)
 
 <a href="https://www.youtube.com/watch?v=ACneUIVByaY&index=2&list=PLyC3kmCiJ2x31ZLjuB7RogEvyamrkSOo9">
-  <h3> 
+  <h2> 
     <a href="https://www.youtube.com/watch?v=ACneUIVByaY&index=2&list=PLyC3kmCiJ2x31ZLjuB7RogEvyamrkSOo9">
       View the full video 
     </a>
-  </h3>
+  </h2>
 <img alt="Youtube Video Preview" src="https://user-images.githubusercontent.com/7774592/156963568-7ecccc0a-cf25-48f5-a55b-f7539626fa11.gif">
 </a>
 
